@@ -1,5 +1,5 @@
 package com.waslabank.wasslabank;
-
+// -->> To Do -> 73ml hena call ll individual Request (RequestID) lw fe offer 73ml button ywdy ll notification
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ import com.waslabank.wasslabank.models.ChatModel;
 import com.waslabank.wasslabank.models.MyRideModel;
 import com.waslabank.wasslabank.models.NotificationModel;
 import com.waslabank.wasslabank.models.RideModel;
+import com.waslabank.wasslabank.models.SingleRequestModel.Example;
 import com.waslabank.wasslabank.models.StatusModel;
 import com.waslabank.wasslabank.models.UserModel;
 import com.waslabank.wasslabank.networkUtils.Connector;
@@ -50,6 +52,8 @@ public class ConfirmRideRequest extends AppCompatActivity {
     private final String TAG = ConfirmRideRequest.class.getSimpleName();
     @BindView(R.id.profile_image)
     ImageView mProfileImage;
+    @BindView(R.id.offers)
+    LinearLayout offers;
     @BindView(R.id.name)
     TextView mNameTextView;
     @BindView(R.id.car)
@@ -66,6 +70,8 @@ public class ConfirmRideRequest extends AppCompatActivity {
     TextView mDistanceTextView;
     @BindView(R.id.confirm_button)
     Button mConfirmButton;
+    @BindView(R.id.cancell)
+    Button cancell;
     @BindView(R.id.mapLiveLocation)
     Button mapLiveLocation;
     @BindView(R.id.Call)
@@ -240,6 +246,14 @@ public class ConfirmRideRequest extends AppCompatActivity {
 
         if (getIntent() != null) {
             if (getIntent().getStringExtra("type").equals("show")) {
+                getIndividualRequest(getIntent().getStringExtra("RequestID"));
+                offers.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                        startActivity(new Intent(ConfirmRideRequest.this,NotificationsActivity.class));
+                    }
+                });
                 setTitle(getString(R.string.ride_details));
                 mMyRideMode = (MyRideModel) getIntent().getSerializableExtra("request");
                 if (URLUtil.isValidUrl(mMyRideMode.getUser().getImage()))
@@ -320,7 +334,14 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 mProgressDialog = Helper.showProgressDialog(this, getString(R.string.loading), false);
                 mConnectorGetRequest.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_request?id=" + mNotificationModel.getRequestId());
                 if (mNotificationModel.getStatus().equals("0")) {
+                    cancell.setVisibility(View.VISIBLE);
                     mConfirmButton.setText(getString(R.string.accept));
+                    cancell.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            reject_offer(""+mNotificationModel.getUserId(),""+mNotificationModel.getFromId(),""+mNotificationModel.getRequestId());
+                        }
+                    });
                 } else {
                     mConfirmButton.setText(getString(R.string.message));
                     ///Comment
@@ -524,4 +545,63 @@ public class ConfirmRideRequest extends AppCompatActivity {
             }
         });
     }
+    private void getIndividualRequest(String id) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Connector.connectionServices.BaseURL)
+                .addConverterFactory(GsonConverterFactory
+                        .create(new Gson())).build();
+        Connector.connectionServices connectionService =
+                retrofit.create(Connector.connectionServices.class);
+
+        connectionService.getSingleRequest(id).enqueue(new Callback<Example>() {
+            @Override
+            public void onResponse(Call<Example> call, Response<Example> response) {
+                Example example=response.body();
+                if(example.getStatus()){
+                    if(example.getRequest().getOffers().size()>0){
+                        offers.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Example> call, Throwable t) {
+
+            }
+        });
+
+    }
+    private void reject_offer(String userId,String fromId,String Id) {
+        ProgressDialog p=new ProgressDialog(ConfirmRideRequest.this);
+        p.setMessage("Loading...");
+        p.show();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Connector.connectionServices.BaseURL)
+                .addConverterFactory(GsonConverterFactory
+                        .create(new Gson())).build();
+        Connector.connectionServices connectionService =
+                retrofit.create(Connector.connectionServices.class);
+
+        connectionService.reject_offer(userId,fromId,Id).enqueue(new Callback<Example>() {
+            @Override
+            public void onResponse(Call<Example> call, Response<Example> response) {
+                Log.d("TTTT", "onResponse: raw"+response.raw());
+                Log.d("TTTT", "onResponse: raw"+response.toString());
+                p.dismiss();
+                Example example=response.body();
+                if(example.getStatus()){
+                    Toast.makeText(ConfirmRideRequest.this, "Request Rejected Successfully", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Example> call, Throwable t) {
+                p.dismiss();
+                Toast.makeText(ConfirmRideRequest.this, "Something wrong happen , please try again", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
 }

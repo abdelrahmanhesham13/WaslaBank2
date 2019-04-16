@@ -12,6 +12,7 @@
         android:textColor="#fff"
         android:textAllCaps="false"
         android:id="@+id/picked"
+        android:visibility="gone"
         android:background="@drawable/bg_rectangle_my_rides"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"/>

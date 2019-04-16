@@ -18,6 +18,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.waslabank.wasslabank.MyDailyRidesActivity;
 import com.waslabank.wasslabank.R;
 import com.waslabank.wasslabank.SplashActivity;
 import com.waslabank.wasslabank.utils.Helper;
@@ -44,7 +45,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         mBuilder.setChannelId("0");
         mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
         mBuilder.setDefaults(0);
-        mBuilder.setSound(null);
+        mBuilder.setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.plucky));
         int color = ContextCompat.getColor(this, android.R.color.white);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mBuilder.setColor(color);
@@ -69,9 +70,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             }else if(notificationMessage.get("targetScreen").equals("request")) {
                 Log.d("gotoooooooooooo", "onMessageReceived: +notification");
-                resultIntent = new Intent(this, SplashActivity.class).putExtra("goToNotification", true);
+              //  resultIntent = new Intent(this, SplashActivity.class).putExtra("goToNotification", true);
+                resultIntent= new Intent(this, MyDailyRidesActivity.class);
+
             } else {
-                resultIntent = new Intent(this, SplashActivity.class);
+                 resultIntent = new Intent(this, SplashActivity.class).putExtra("goToNotification", true);
+                // resultIntent = new Intent(this, SplashActivity.class);
             }
         }
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

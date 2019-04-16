@@ -271,10 +271,19 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
                 if (statusModel.getStatus()) {
                     // Log.d("TTTT", "onResponse: lat-->" + statusModel.getRequest().getLatitude() + "long-->" + statusModel.getRequest().getLongitude());
 
+                    if(statusModel.getRequest().getUserId()
+                            .equals(Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId())){
+                        if (statusModel.getRequest().getPicked().equals("0")) {
+                            picked.setVisibility(View.VISIBLE);
+                        }
+                    }
                     driver_id = statusModel.getRequest().getUserId();
                     if (statusModel.getRequest().getPicked().equals("1")) {
                         picked.setVisibility(View.GONE);
-                    }
+                    }/*else {
+                        picked.setVisibility(View.VISIBLE);
+
+                    }*/
                     if (statusModel.getRequest().getFromId().equals(user_id)) {
                         picked.setVisibility(View.GONE);
                     }

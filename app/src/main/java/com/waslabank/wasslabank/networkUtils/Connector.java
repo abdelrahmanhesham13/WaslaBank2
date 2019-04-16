@@ -23,6 +23,7 @@ import com.waslabank.wasslabank.models.MyRideModel;
 import com.waslabank.wasslabank.models.NotificationModel;
 import com.waslabank.wasslabank.models.ReviewModel;
 import com.waslabank.wasslabank.models.RideModel;
+import com.waslabank.wasslabank.models.SingleRequestModel.Example;
 import com.waslabank.wasslabank.models.StatusModel;
 import com.waslabank.wasslabank.models.UserModel;
 import com.waslabank.wasslabank.utils.Helper;
@@ -740,6 +741,7 @@ public class Connector {
                 , @Query("id") String id
 
         );
+
         @GET("waslabank/api/update_request_status")
         Call<StatusModel> update_request_status(
                 @Query("longitude") String longitude
@@ -748,9 +750,10 @@ public class Connector {
                 , @Query("id") String id
 
         );
+
         @GET("waslabank/api/update_request_status")
         Call<StatusModel> update_request_status(
-               @Query("user_id") String user_id
+                @Query("user_id") String user_id
                 , @Query("picked") String picked
                 , @Query("id") String id
 
@@ -767,6 +770,18 @@ public class Connector {
         @GET("waslabank/api/get_chat_messages")
         Call<StatusModel> chatMsgs(
                 @Query("chat_id") String chat_id
+        );
+
+        @GET("waslabank/api/get_request")
+        Call<Example> getSingleRequest(
+                @Query("id") String id
+        );
+        //reject_offer(user_id,from_id , id=>request)
+        @GET("waslabank/api/reject_offer")
+        Call<Example> reject_offer(
+                @Query("user_id") String user_id
+                ,@Query("from_id") String from_id
+                ,@Query("id") String id
         );
     }
 }
