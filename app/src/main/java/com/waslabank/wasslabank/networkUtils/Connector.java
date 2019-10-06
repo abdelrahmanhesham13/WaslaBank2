@@ -18,6 +18,8 @@ import com.waslabank.wasslabank.models.CarModel;
 import com.waslabank.wasslabank.models.ChatModel;
 import com.waslabank.wasslabank.models.ColorModel;
 import com.waslabank.wasslabank.models.DailyRideModel;
+import com.waslabank.wasslabank.models.GroupMessagesResponseModel;
+import com.waslabank.wasslabank.models.GroupsResponseModel;
 import com.waslabank.wasslabank.models.MessageModel;
 import com.waslabank.wasslabank.models.MyRideModel;
 import com.waslabank.wasslabank.models.NotificationModel;
@@ -25,6 +27,8 @@ import com.waslabank.wasslabank.models.ReviewModel;
 import com.waslabank.wasslabank.models.RideModel;
 import com.waslabank.wasslabank.models.SingleRequestModel.Example;
 import com.waslabank.wasslabank.models.StatusModel;
+import com.waslabank.wasslabank.models.StatusResponseModel;
+import com.waslabank.wasslabank.models.UpdateToken;
 import com.waslabank.wasslabank.models.UserModel;
 import com.waslabank.wasslabank.utils.Helper;
 
@@ -258,8 +262,7 @@ public class Connector {
                 JSONObject jsonObject = new JSONObject(response);
                 JSONArray users = jsonObject.getJSONArray("datas");
                 for (int i = 0; i < users.length(); i++) {
-                    JSONObject from = users.getJSONObject(i);
-                    JSONObject user = from.getJSONObject("user");
+                    JSONObject user = users.getJSONObject(i);
                     String name = user.optString("name");
                     String username = user.optString("username");
                     String token = user.optString("token");
@@ -380,6 +383,54 @@ public class Connector {
         return requestsModels;
     }
 
+
+
+    public static MyRideModel getMyRequest(String response, Context context) {
+        MyRideModel model = null;
+        if (Helper.isJSONValid(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                JSONObject request = jsonObject.optJSONObject("request");
+                String id = request.optString("id");
+                String cityId = request.optString("city_id");
+                String address = request.optString("address");
+                String lon = request.optString("longitude");
+                String lat = request.optString("latitude");
+                String lonTo = request.optString("longitude_to");
+                String latTo = request.optString("latitude_to");
+                String status = request.optString("status");
+                String created = request.optString("created");
+                String updated = request.optString("updated");
+                String userId = request.optString("user_id");
+                String addressTo = request.optString("address_to");
+                String cityTo = request.optString("city_id_to");
+                String requestTime = request.optString("request_time");
+                String view = request.optString("views");
+                String start = request.optString("start");
+                String requestDate = request.optString("request_date");
+                String lonUpdate = request.optString("longitude_update");
+                String latUpdate = request.optString("latitude_update");
+                String fromId = request.optString("from_id");
+                boolean upcoming = request.optBoolean("upcoming");
+                JSONObject user = request.optJSONObject("user");
+                String user_Id = user.optString("id");
+                String userName = user.optString("name");
+                String rating = user.optString("rating");
+                String carName = user.optString("car_name");
+                String image = user.optString("image");
+                String distance = request.optString("distance");
+                String seats = request.optString("seats");
+                UserModel userModel = new UserModel(userName, user_Id, rating, carName);
+                userModel.setImage(image);
+                model = new MyRideModel(id, cityId, address, lon, lat, lonTo, latTo, status, created, updated, userId, addressTo
+                            , cityTo, requestTime, view, requestDate, lonUpdate, latUpdate, fromId, userModel, upcoming, distance, seats, start);
+
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return model;
+    }
 
     public static ArrayList<DailyRideModel> getMyRequestsDaily(String response, Context context) {
         ArrayList<DailyRideModel> requestsModels = new ArrayList<>();
@@ -717,7 +768,7 @@ public class Connector {
     }
 
     public interface connectionServices {
-        public String BaseURL = "http://www.cta3.com/";
+        public String BaseURL = "http://www.as.cta3.com/";
 
         @GET("waslabank/api/get_request")
         Call<StatusModel> get_request(
@@ -725,11 +776,27 @@ public class Connector {
 
         );
 
+        @GET("waslabank/api/get_groups")
+        Call<GroupsResponseModel> getGroupChats(@Query("user_id") String userId);
+
+        @GET("waslabank/api/get_group_messages")
+        Call<GroupMessagesResponseModel> getGroupMessages(@Query("user_id") String userId,@Query("group_id") String groupId);
+
+        @GET("waslabank/api/send_chat_message")
+        Call<StatusResponseModel> sendChatMessage(@Query("user_id") String userId,@Query("group_id") String groupId,@Query("message") String message);
+
         @GET("waslabank/api/get_user")
         Call<StatusModel> get_user(
                 @Query("id") String user_id
 
         );
+
+        @GET("waslabank/api/add_group")
+        Call<StatusResponseModel> addGroup(@Query("user_id") String userId,@Query("name") String name,@Query("selected[]") ArrayList<String> selected);
+
+
+        @GET("waslabank/api/add_group_member")
+        Call<StatusResponseModel> addMember(@Query("user_id") String userId,@Query("group_id") String groupId,@Query("selected[]") ArrayList<String> selected);
 
         @GET("waslabank/api/update_request_status")
         Call<StatusModel> update_request_status(
@@ -749,6 +816,18 @@ public class Connector {
                 , @Query("user_id") String user_id
                 , @Query("id") String id
 
+        );
+
+
+        @GET("waslabank/api/update_request_status")
+        Call<StatusModel> update_request_status(
+                @Query("longitude") String longitude
+                , @Query("latitude") String latitude
+                , @Query("user_id") String user_id
+                , @Query("id") String id
+                , @Query("status") String status
+                , @Query("distance") String distance
+                ,@Query("extra") String extra
         );
 
         @GET("waslabank/api/update_request_status")
@@ -783,5 +862,9 @@ public class Connector {
                 ,@Query("from_id") String from_id
                 ,@Query("id") String id
         );
+
+
+        @GET("waslabank/api/update_token")
+        Call<UpdateToken> updateToken(@Query("id") String id, @Query("token") String token);
     }
 }

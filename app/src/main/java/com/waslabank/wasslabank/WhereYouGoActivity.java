@@ -37,7 +37,13 @@ import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.waslabank.wasslabank.models.MyRideModel;
+import com.waslabank.wasslabank.models.UpdateToken;
+import com.waslabank.wasslabank.models.UserModel;
 import com.waslabank.wasslabank.networkUtils.Connector;
 import com.waslabank.wasslabank.utils.GPSTracker;
 import com.waslabank.wasslabank.utils.Helper;
@@ -51,6 +57,9 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import se.arbitur.geocoding.Callback;
 import se.arbitur.geocoding.Response;
 import se.arbitur.geocoding.ReverseGeocoding;
@@ -87,18 +96,26 @@ public class WhereYouGoActivity extends AppCompatActivity implements TimePickerD
     Spinner mDaysSpinner;
     @BindView(R.id.gender)
     RadioGroup mGender;
+    @BindView(R.id.Credit)
+    TextView mCredit;
+    @BindView(R.id.active_ride)
+    Button mActiveRideButton;
 
     Connector mConnectorPostRide;
+    Connector mConnectorGetRequest;
 
     String mAddressFrom;
     String mCityFrom;
     String mCountryFrom;
     double mLatFrom = 0;
     double mLonFrom = 0;
+    GPSTracker mTracker;
+    boolean mLocated = false;
 
     String mAddressTo;
     String mCityTo;
     String mCountryTo;
+    String activeRideId;
     double mLatTo = 0;
     double mLonTo = 0;
     double distance;
@@ -108,6 +125,7 @@ public class WhereYouGoActivity extends AppCompatActivity implements TimePickerD
     String mSelectedDay = null;
 
     int mSelectedGender = -1;
+    MyRideModel myRideModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +167,18 @@ public class WhereYouGoActivity extends AppCompatActivity implements TimePickerD
                 return view;
             }
         };
+
+        mConnectorGetRequest = new Connector(this, new Connector.LoadCallback() {
+            @Override
+            public void onComplete(String tag, String response) {
+                myRideModel = Connector.getMyRequest(response,WhereYouGoActivity.this);
+            }
+        }, new Connector.ErrorCallback() {
+            @Override
+            public void onError(VolleyError error) {
+
+            }
+        });
         adapterNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mDaysSpinner.setAdapter(adapterNames);
         mDaysSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -224,7 +254,7 @@ public class WhereYouGoActivity extends AppCompatActivity implements TimePickerD
                                 .withListener(WhereYouGoActivity.this)
                                 .waypoints(new LatLng(fromLocation.getLatitude(), fromLocation.getLongitude()), new LatLng(toLocation.getLatitude(), toLocation.getLongitude()))
                                 .alternativeRoutes(false)
-                                .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                                .key("AIzaSyCE29pCYj3ntftgARbTP0FA8xZyLBCF7f8")
                                 .build();
                         routing.execute();
 
@@ -262,7 +292,7 @@ public class WhereYouGoActivity extends AppCompatActivity implements TimePickerD
                                 .withListener(WhereYouGoActivity.this)
                                 .waypoints(new LatLng(fromLocation.getLatitude(), fromLocation.getLongitude()), new LatLng(toLocation.getLatitude(), toLocation.getLongitude()))
                                 .alternativeRoutes(false)
-                                .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                                .key("AIzaSyCE29pCYj3ntftgARbTP0FA8xZyLBCF7f8")
                                 .build();
                         routing.execute();
                     }
@@ -387,6 +417,50 @@ public class WhereYouGoActivity extends AppCompatActivity implements TimePickerD
             }
         });
 
+        mActiveRideButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(WhereYouGoActivity.this,ConfirmRideRequest.class).putExtra("RequestID",activeRideId).putExtra("type","show").putExtra("request",myRideModel).putExtra("Status",myRideModel.getStatus()).putExtra("user_id",myRideModel.getUserId()).putExtra("from_id",myRideModel.getFromId()));
+            }
+        });
+
+        ProgressDialog progressDialog = Helper.showProgressDialog(this,"Loading",false);
+        getActiveRide(progressDialog);
+
+    }
+
+
+
+    private void getActiveRide(ProgressDialog progressDialog){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Connector.connectionServices.BaseURL)
+                .addConverterFactory(GsonConverterFactory
+                        .create(new Gson())).build();
+        Connector.connectionServices connectionService =
+                retrofit.create(Connector.connectionServices.class);
+
+        connectionService.updateToken(Helper.getUserSharedPreferences(this).getId(),Helper.getTokenFromSharedPreferences(this)).enqueue(new retrofit2.Callback<UpdateToken>() {
+            @Override
+            public void onResponse(@NonNull Call<UpdateToken> call, @NonNull retrofit2.Response<UpdateToken> response) {
+                progressDialog.dismiss();
+                if (response.body() != null) {
+                    Helper.writeToLog(response.body().toString());
+                    mCredit.setText("Your points :" + response.body().getUser().getCredit());
+                    if (response.body().getActive().equals(true)) {
+                        mActiveRideButton.setVisibility(View.VISIBLE);
+                        activeRideId = response.body().getRequestId();
+                        mConnectorGetRequest.getRequest(TAG,"http://www.as.cta3.com/waslabank/api/get_request?id=" + activeRideId);
+                    } else {
+                        mActiveRideButton.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UpdateToken> call, @NonNull Throwable t) {
+                progressDialog.dismiss();
+            }
+        });
     }
 
 
@@ -463,9 +537,9 @@ public class WhereYouGoActivity extends AppCompatActivity implements TimePickerD
     public void onRoutingSuccess(ArrayList<Route> arrayList, int i) {
         String duration = String.valueOf((arrayList.get(i).getDurationValue()) / 60) + " M";
         if (mDaily.isChecked()) {
-            mConnectorPostRide.getRequest(TAG, "http://www.cta3.com/waslabank/api/add_daily?user_id=" + Helper.getUserSharedPreferences(WhereYouGoActivity.this).getId() + "&longitude=" + mLonFrom + "&latitude=" + mLatFrom + "&city_id=" + Uri.encode(mCityFrom) + "&address=" + Uri.encode(mAddressFrom) + "&time=" + Uri.encode(mTime.getText().toString()) + "&latitude_to=" + mLatTo + "&city_id_to=" + Uri.encode(mCityTo) + "&address_to=" + Uri.encode(mAddressTo) + "&longitude_to=" + mLonTo + "&weekday=" + mSelectedDay + "&seats=" + Uri.encode(mSeatsEditText.getText().toString()) + "&gender=" + mSelectedGender + "&ref_id=" + Helper.getUserSharedPreferences(WhereYouGoActivity.this).getRefId() + "&distance=" + Uri.encode(String.valueOf(distance)) + "&duration=" + Uri.encode(duration));
+            mConnectorPostRide.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_daily?user_id=" + Helper.getUserSharedPreferences(WhereYouGoActivity.this).getId() + "&longitude=" + mLonFrom + "&latitude=" + mLatFrom + "&city_id=" + Uri.encode(mCityFrom) + "&address=" + Uri.encode(mAddressFrom) + "&time=" + Uri.encode(mTime.getText().toString()) + "&latitude_to=" + mLatTo + "&city_id_to=" + Uri.encode(mCityTo) + "&address_to=" + Uri.encode(mAddressTo) + "&longitude_to=" + mLonTo + "&weekday=" + mSelectedDay + "&seats=" + Uri.encode(mSeatsEditText.getText().toString()) + "&gender=" + mSelectedGender + "&ref_id=" + Helper.getUserSharedPreferences(WhereYouGoActivity.this).getRefId() + "&distance=" + Uri.encode(String.valueOf(distance)) + "&duration=" + Uri.encode(duration));
         } else {
-            mConnectorPostRide.getRequest(TAG, "http://www.cta3.com/waslabank/api/add_request?user_id=" + Helper.getUserSharedPreferences(WhereYouGoActivity.this).getId() + "&longitude=" + mLonFrom + "&latitude=" + mLatFrom + "&city_id=" + Uri.encode(mCityFrom) + "&address=" + Uri.encode(mAddressFrom) + "&time=" + Uri.encode(mTime.getText().toString()) + "&date=" + Uri.encode(mDate.getText().toString()) + "&latitude_to=" + mLatTo + "&city_id_to=" + Uri.encode(mCityTo) + "&address_to=" + Uri.encode(mAddressTo) + "&longitude_to=" + mLonTo + "&seats=" + Uri.encode(mSeatsEditText.getText().toString()) + "&gender=" + mSelectedGender + "&ref_id=" + Helper.getUserSharedPreferences(WhereYouGoActivity.this).getRefId() + "&distance=" + Uri.encode(String.valueOf(distance)) + "&duration=" + Uri.encode(duration));
+            mConnectorPostRide.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_request?user_id=" + Helper.getUserSharedPreferences(WhereYouGoActivity.this).getId() + "&longitude=" + mLonFrom + "&latitude=" + mLatFrom + "&city_id=" + Uri.encode(mCityFrom) + "&address=" + Uri.encode(mAddressFrom) + "&time=" + Uri.encode(mTime.getText().toString()) + "&date=" + Uri.encode(mDate.getText().toString()) + "&latitude_to=" + mLatTo + "&city_id_to=" + Uri.encode(mCityTo) + "&address_to=" + Uri.encode(mAddressTo) + "&longitude_to=" + mLonTo + "&seats=" + Uri.encode(mSeatsEditText.getText().toString()) + "&gender=" + mSelectedGender + "&ref_id=" + Helper.getUserSharedPreferences(WhereYouGoActivity.this).getRefId() + "&distance=" + Uri.encode(String.valueOf(distance)) + "&duration=" + Uri.encode(duration));
         }
     }
 
@@ -475,7 +549,7 @@ public class WhereYouGoActivity extends AppCompatActivity implements TimePickerD
     }
 
     public void getAddress(LatLng latLng) {
-        new ReverseGeocoding(latLng.latitude, latLng.longitude, "AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc")
+        new ReverseGeocoding(latLng.latitude, latLng.longitude, "AIzaSyCE29pCYj3ntftgARbTP0FA8xZyLBCF7f8")
                 .setLanguage("en")
                 .fetch(new Callback() {
                     @Override
@@ -521,24 +595,48 @@ public class WhereYouGoActivity extends AppCompatActivity implements TimePickerD
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mCredit.setText("Your points :" + Helper.getUserSharedPreferences(this).getCredit());
+        ProgressDialog progressDialog = Helper.showProgressDialog(this,"Loading",false);
+        getActiveRide(progressDialog);
+    }
+
     private void getCurrentLocation(Context context) {
         Log.d("Location", "my location is " + "tessssst");
         mProgressDialog = Helper.showProgressDialog(WhereYouGoActivity.this, getString(R.string.loading), false);
 
-        SingleShotLocationProvider.requestSingleUpdate(context,
-                new SingleShotLocationProvider.LocationCallback() {
-                    @Override
-                    public void onNewLocationAvailable(SingleShotLocationProvider.GPSCoordinates location) {
-                        Log.d("Location", "my location is " + location.toString());
-                        Log.d("Location", "my location is " + location.toString() + "lat-->" + location.latitude
-                                + "--long-->" + location.longitude);
-                        mLatFrom = location.latitude;
-                        mLonFrom = location.longitude;
-                        mCurrentLocationEditText.setText(mAddressFrom);
-                        LatLng latLng = new LatLng(location.latitude, location.longitude);
-                        getAddress(latLng);
-                    }
-                });
+
+        mTracker = new GPSTracker(WhereYouGoActivity.this, new GPSTracker.OnGetLocation() {
+            @Override
+            public void onGetLocation(double lat, double lon) {
+                if (lat != 0 && lon != 0 && !mLocated) {
+                    mProgressDialog.dismiss();
+                    mLocated = true;
+                    mLatFrom = lat;
+                    mLonFrom = lon;
+                    LatLng latLng = new LatLng(lat, lon);
+                    getAddress(latLng);
+                    mTracker.stopUsingGPS();
+                }
+            }
+        });
+        if (mTracker.canGetLocation()) {
+            Location location = mTracker.getLocation();
+            if (location != null) {
+                if (location.getLatitude() != 0 && location.getLongitude() != 0 && !mLocated) {
+                    mProgressDialog.dismiss();
+                    mLatFrom = location.getLatitude();
+                    mLonFrom = location.getLongitude();
+                    mLocated = true;
+                    LatLng latLng = new LatLng(mLatFrom, mLonFrom);
+                    getAddress(latLng);
+                    mTracker.stopUsingGPS();
+                }
+            }
+        }
+
 
     }
 

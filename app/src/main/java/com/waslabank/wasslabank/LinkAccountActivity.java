@@ -78,7 +78,7 @@ public class LinkAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mProgressDialog = Helper.showProgressDialog(LinkAccountActivity.this,getString(R.string.loading),false);
-                mConnector.getRequest(TAG,"https://www.cta3.com/waslabank/api/search_users?mobile=" + mSearch.getText().toString() + "&user_id=" + Helper.getUserSharedPreferences(LinkAccountActivity.this).getId());
+                mConnector.getRequest(TAG,"http://www.as.cta3.com/waslabank/api/search_users?mobile=" + mSearch.getText().toString() + "&user_id=" + Helper.getUserSharedPreferences(LinkAccountActivity.this).getId());
 
             }
         });

@@ -159,4 +159,7 @@
     <string name="RideStarted">RideStarted</string>
     <string name="Finished">Finished</string>
     <string name="youwillbeable">You will be able to continue with your ride when will be approved</string>
+    <string name="show_rides">Show rides</string>
+    <string name="transfer_credit">Transfer credit</string>
+    <string name="open_active_ride">Open active ride</string>
 </resources>

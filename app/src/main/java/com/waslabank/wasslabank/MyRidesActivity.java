@@ -20,6 +20,8 @@ public class MyRidesActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
+
+    FragmentAdapter fragmentPagerAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,8 +33,15 @@ public class MyRidesActivity extends AppCompatActivity {
         mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_back));
         mToolbar.setNavigationOnClickListener(v -> finish());
 
-        FragmentAdapter fragmentPagerAdapter = new FragmentAdapter(getSupportFragmentManager(), this);
+        fragmentPagerAdapter = new FragmentAdapter(getSupportFragmentManager(), this);
         mViewPager.setAdapter(fragmentPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        fragmentPagerAdapter.notifyDataSetChanged();
     }
 }

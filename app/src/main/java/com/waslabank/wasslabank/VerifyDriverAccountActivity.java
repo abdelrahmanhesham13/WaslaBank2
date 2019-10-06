@@ -153,7 +153,7 @@ public class VerifyDriverAccountActivity extends AppCompatActivity {
                     Helper.showSnackBarMessage(getString(R.string.car_color_select), VerifyDriverAccountActivity.this);
                 } else {
                     mProgressDialog.show();
-                    mConnector.getRequest(TAG, "http://www.cta3.com/waslabank/api/verify_account?user_id=" + Helper.getUserSharedPreferences(VerifyDriverAccountActivity.this).getId() + "&license=" + mLicenseImage + "&car_image=" + mCarImage + "&car_id=" + mSelectedCarId + "&color_id=" + mSelectedColorId + "&name=" + Uri.encode(mCarDetailsEditText.getText().toString()) + "&national_id=" + mNationalIdEditText.getText().toString());
+                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/verify_account?user_id=" + Helper.getUserSharedPreferences(VerifyDriverAccountActivity.this).getId() + "&license=" + mLicenseImage + "&car_image=" + mCarImage + "&car_id=" + mSelectedCarId + "&color_id=" + mSelectedColorId + "&name=" + Uri.encode(mCarDetailsEditText.getText().toString()) + "&national_id=" + mNationalIdEditText.getText().toString());
                 }
             }
         });
@@ -211,7 +211,7 @@ public class VerifyDriverAccountActivity extends AppCompatActivity {
         }});
 
         Ion.with(this)
-                .load("https://www.cta3.com/waslabank/api/upload_image_api")
+                .load("http://www.as.cta3.com/waslabank/api/upload_image_api")
                 .setMultipartFile("parameters[0]", "image", mSelectedFile)
                 .asString()
                 .setCallback(new FutureCallback<String>() {
@@ -431,8 +431,8 @@ public class VerifyDriverAccountActivity extends AppCompatActivity {
             }
         });
 
-        mConnectorGetCarsData.getRequest(TAG, "https://www.cta3.com/waslabank/api/cars");
-        mConnectorGetColorsData.getRequest(TAG, "https://www.cta3.com/waslabank/api/colors");
+        mConnectorGetCarsData.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/cars");
+        mConnectorGetColorsData.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/colors");
 
     }
 

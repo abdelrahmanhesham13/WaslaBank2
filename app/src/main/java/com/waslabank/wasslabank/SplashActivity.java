@@ -94,7 +94,7 @@ public class SplashActivity extends AppCompatActivity {
                     } else {
                         if (Helper.preferencesContainsUser(SplashActivity.this)) {
                             mProgressDialog = Helper.showProgressDialog(SplashActivity.this, getString(R.string.loading), false);
-                            mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/login?password="
+                            mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/login?password="
                                     + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getPassword())
                                     + "&username=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this)
                                     .getUsername()) + "&token=" + Helper
@@ -177,7 +177,7 @@ public class SplashActivity extends AppCompatActivity {
             } else {
                 if (Helper.preferencesContainsUser(SplashActivity.this)) {
                     mProgressDialog = Helper.showProgressDialog(SplashActivity.this, getString(R.string.loading), false);
-                    mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/login?password=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getPassword()) + "&username=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getUsername()) + "&token=" + Helper.getTokenFromSharedPreferences(SplashActivity.this));
+                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/login?password=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getPassword()) + "&username=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getUsername()) + "&token=" + Helper.getTokenFromSharedPreferences(SplashActivity.this));
                 } else {
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                     finish();

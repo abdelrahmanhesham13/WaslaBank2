@@ -20,6 +20,24 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         tools:replace="android:supportsRtl">
+        <activity android:name=".CreateNewGroupActivity" android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+        <activity
+            android:name=".GroupChatActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme" />
+        <activity
+            android:name=".GroupsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme" />
+        <activity
+            android:name=".FriendsRidesActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -37,8 +55,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc" />
-        <!-- You must use an API key to authenticate each request to Google Maps Platform APIs -->
+            android:value="AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc" /> <!-- You must use an API key to authenticate each request to Google Maps Platform APIs -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -72,7 +89,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".LoginActivity"
@@ -157,17 +173,18 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="sensor"
             android:theme="@style/FinestWebViewTheme.Light" />
-        <activity android:name=".LiveTrackMapActivity">
-
-        </activity>
+        <activity android:name=".LiveTrackMapActivity" />
         <activity
             android:name=".LiveLocationMapsActivity"
             android:label="@string/title_activity_live_location_maps">
-            <!--<intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
 
         </activity>
     </application>

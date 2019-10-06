@@ -139,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
                     Helper.saveUserToSharedPreferences(LoginActivity.this,Connector.getUser(response));
                     startActivity(new Intent(LoginActivity.this,WhereYouGoActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 } else {
-                    mConnectorSignUp.getRequest(TAG,"https://www.cta3.com/waslabank/api/signup?password=" + Uri.encode("") + "&username=" + mEmail + "&mobile=" + "" +"&name=" + Uri.encode(mName) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
+                    mConnectorSignUp.getRequest(TAG,"http://www.as.cta3.com/waslabank/api/signup?password=" + Uri.encode("") + "&username=" + mEmail + "&mobile=" + "" +"&name=" + Uri.encode(mName) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
 
                 }
             }
@@ -169,7 +169,7 @@ public class LoginActivity extends AppCompatActivity {
                     Helper.showSnackBarMessage(getString(R.string.enter_password),LoginActivity.this);
                 } else {
                     mProgressDialog = Helper.showProgressDialog(LoginActivity.this,getString(R.string.loading),false);
-                    mConnector.getRequest(TAG,"https://www.cta3.com/waslabank/api/login?password=" + Uri.encode(mPasswordEditText.getText().toString()) + "&username=" + mEmailEditText.getText().toString() + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
+                    mConnector.getRequest(TAG,"http://www.as.cta3.com/waslabank/api/login?password=" + Uri.encode(mPasswordEditText.getText().toString()) + "&username=" + mEmailEditText.getText().toString() + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
                 }
             }
         });
@@ -193,7 +193,7 @@ public class LoginActivity extends AppCompatActivity {
                                                     mName = object.getString("name");
                                                     mImage = "https://graph.facebook.com/" + object.get("id") + "/picture?type=large";
                                                     mProgressDialog = Helper.showProgressDialog(LoginActivity.this,getString(R.string.loading),false);
-                                                    mConnectorSocial.getRequest(TAG, "https://www.cta3.com/waslabank/api/login?" + "username=" + mEmail + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
+                                                    mConnectorSocial.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/login?" + "username=" + mEmail + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -289,11 +289,12 @@ public class LoginActivity extends AppCompatActivity {
                     mImage = "";
                 if (mEmail != null) {
                     mProgressDialog = Helper.showProgressDialog(LoginActivity.this,getString(R.string.loading),false);
-                    mConnectorSocial.getRequest(TAG, "https://www.cta3.com/waslabank/api/login?" + "username=" + mEmail + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
+                    mConnectorSocial.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/login?" + "username=" + mEmail + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
                 }
             }
 
         } catch (ApiException e) {
+            e.printStackTrace();
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
         }
     }

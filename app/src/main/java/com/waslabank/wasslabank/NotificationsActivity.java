@@ -74,7 +74,7 @@ public class NotificationsActivity extends AppCompatActivity {
                 if (Connector.checkStatus(response)) {
                     Toast.makeText(NotificationsActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
                     mProgressDialog.show();
-                    mConnector.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_notifications?user_id=" + Helper.getUserSharedPreferences(NotificationsActivity.this).getId());
+                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_notifications?user_id=" + Helper.getUserSharedPreferences(NotificationsActivity.this).getId());
                 }
             }
         }, new Connector.ErrorCallback() {
@@ -91,7 +91,7 @@ public class NotificationsActivity extends AppCompatActivity {
                 if (Connector.checkStatus(response)) {
                     Helper.showSnackBarMessage(getString(R.string.accept), NotificationsActivity.this);
                     mProgressDialog.show();
-                    mConnector.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_notifications?user_id=" + Helper.getUserSharedPreferences(NotificationsActivity.this).getId());
+                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_notifications?user_id=" + Helper.getUserSharedPreferences(NotificationsActivity.this).getId());
                 } else {
                     Helper.showSnackBarMessage(getString(R.string.error), NotificationsActivity.this);
                 }
@@ -111,13 +111,13 @@ public class NotificationsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mProgressDialog.show();
-                        mConnectorJoin.getRequest(TAG, "http://www.cta3.com/waslabank/api/respond_join?name=" + Uri.encode(mNotificationsModels.get(position).getmUserModel().getName()) + "&id=" + mNotificationsModels.get(position).getId() + "&from_id=" + mNotificationsModels.get(position).getFromId() + "&user_id=" + mNotificationsModels.get(position).getUserId() + "&status=1");
+                        mConnectorJoin.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/respond_join?name=" + Uri.encode(mNotificationsModels.get(position).getmUserModel().getName()) + "&id=" + mNotificationsModels.get(position).getId() + "&from_id=" + mNotificationsModels.get(position).getFromId() + "&user_id=" + mNotificationsModels.get(position).getUserId() + "&status=1");
                     }
                 }, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mProgressDialog.show();
-                        mConnectorJoin.getRequest(TAG, "http://www.cta3.com/waslabank/api/respond_join?name=" + Uri.encode(mNotificationsModels.get(position).getmUserModel().getName()) + "&id=" + mNotificationsModels.get(position).getId() + "&from_id=" + mNotificationsModels.get(position).getFromId() + "&user_id=" + mNotificationsModels.get(position).getUserId() + "&status=0");
+                        mConnectorJoin.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/respond_join?name=" + Uri.encode(mNotificationsModels.get(position).getmUserModel().getName()) + "&id=" + mNotificationsModels.get(position).getId() + "&from_id=" + mNotificationsModels.get(position).getFromId() + "&user_id=" + mNotificationsModels.get(position).getUserId() + "&status=0");
                     }
                 });
             } else if (mNotificationsModels.get(position).getType().equals("offer")) {
@@ -142,7 +142,7 @@ public class NotificationsActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             mProgressDialog.show();
-                            mConnectorCancelOffer.getRequest(TAG, "http://www.cta3.com/waslabank/api/cancel_offer?id=" + mNotificationsModels.get(position).getRequestId() + "&user_id=" + mNotificationsModels.get(position).getUserId() + "&from_id=" + mNotificationsModels.get(position).getFromId());
+                            mConnectorCancelOffer.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/cancel_offer?id=" + mNotificationsModels.get(position).getRequestId() + "&user_id=" + mNotificationsModels.get(position).getUserId() + "&from_id=" + mNotificationsModels.get(position).getFromId());
                         }
                     }, new DialogInterface.OnClickListener() {
                         @Override
@@ -195,7 +195,7 @@ public class NotificationsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mProgressDialog = Helper.showProgressDialog(this, getString(R.string.loading), false);
-        mConnector.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_notifications?user_id=" + Helper.getUserSharedPreferences(this).getId());
+        mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_notifications?user_id=" + Helper.getUserSharedPreferences(this).getId());
 
     }
 }

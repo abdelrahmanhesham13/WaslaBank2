@@ -95,7 +95,7 @@ public class FindRideActivity extends AppCompatActivity {
 
         mProgressDialog = Helper.showProgressDialog(this,getString(R.string.loading),false);
         //mConnector.getRequest(TAG,"http://www.cta3.com/waslabank/api/get_requests?lat_from=13123131231&long_from=132311231231&lat_to=13123131231&long_to=132311231231" );
-        mConnector.getRequest(TAG,"http://www.cta3.com/waslabank/api/get_requests?lat_from=" + mLatFrom + "&long_from=" + mLonFrom
+        mConnector.getRequest(TAG,"http://www.as.cta3.com/waslabank/api/get_requests?lat_from=" + mLatFrom + "&long_from=" + mLonFrom
                 + "&lat_to=" + mLatTo + "&long_to=" + mLonTo+ "&user_id=" +Helper.getUserSharedPreferences(this).getId() + "&type=" +"search");
        // Log.d("TTTT ","onCreate:---> "+"http://www.cta3.com/waslabank/api/get_requests?lat_from=" + mLatFrom + "&long_from=" + mLonFrom + "&lat_to=" + mLatTo + "&long_to=" + mLonTo);
         Log.d("TTTT", "onCreate: "+"http://www.cta3.com/waslabank/api/get_requests?lat_from=" + mLatFrom + "&long_from=" + mLonFrom + "&lat_to=" + mLatTo + "&long_to=" + mLonTo);

@@ -162,7 +162,7 @@ public class SignUpActivity extends AppCompatActivity {
         }});
 
         Ion.with(this)
-                .load("https://www.cta3.com/waslabank/api/upload_image_api")
+                .load("http://www.as.cta3.com/waslabank/api/upload_image_api")
                 .setMultipartFile("parameters[0]", "image", mSelectedFile)
                 .asString()
                 .setCallback(new FutureCallback<String>() {

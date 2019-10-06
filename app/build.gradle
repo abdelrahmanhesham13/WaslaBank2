@@ -8,8 +8,8 @@ android {
         applicationId "com.waslabank.wasslabank"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 5
-        versionName "5.0"
+        versionCode 15
+        versionName "6.1"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -32,6 +32,7 @@ dependencies {
     implementation 'com.android.support:exifinterface:28.0.0'
     implementation 'com.jakewharton:butterknife:9.0.0-rc2'
     implementation 'com.chaos.view:pinview:1.4.2'
+    implementation 'org.apache.commons:commons-lang3:3.6'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.android.support:design:28.0.0'

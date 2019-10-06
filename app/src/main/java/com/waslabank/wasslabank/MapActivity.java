@@ -203,7 +203,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     public String getAddress(LatLng latLng) {
-        new ReverseGeocoding(latLng.latitude, latLng.longitude, "AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc")
+        new ReverseGeocoding(latLng.latitude, latLng.longitude, "AIzaSyCE29pCYj3ntftgARbTP0FA8xZyLBCF7f8")
                 .setLanguage("en")
                 .fetch(new Callback() {
                     @Override

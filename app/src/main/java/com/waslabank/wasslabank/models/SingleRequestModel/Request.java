@@ -4,6 +4,7 @@ package com.waslabank.wasslabank.models.SingleRequestModel;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.waslabank.wasslabank.models.Offer;
 
 public class Request {
 
@@ -93,7 +94,7 @@ public class Request {
     private Integer userLatitude;
     @SerializedName("offers")
     @Expose
-    private List<Object> offers = null;
+    private List<Offer> offers = null;
     @SerializedName("user")
     @Expose
     private User user;
@@ -325,11 +326,11 @@ public class Request {
         this.userLatitude = userLatitude;
     }
 
-    public List<Object> getOffers() {
+    public List<Offer> getOffers() {
         return offers;
     }
 
-    public void setOffers(List<Object> offers) {
+    public void setOffers(List<Offer> offers) {
         this.offers = offers;
     }
 

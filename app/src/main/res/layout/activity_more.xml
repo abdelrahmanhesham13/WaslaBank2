@@ -165,6 +165,21 @@
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
+
+                <TextView
+                    android:id="@+id/group_chats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_group_black_24dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_group_black_24dp"
+                    android:gravity="center_vertical"
+                    android:padding="15dp"
+                    android:text="Group Chats"
+                    android:textColor="#A6A6A6"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/notifications"
                     android:layout_width="match_parent"
@@ -175,6 +190,20 @@
                     android:gravity="center_vertical"
                     android:padding="15dp"
                     android:text="@string/notifications"
+                    android:textColor="#A6A6A6"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/transfer_credit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_transfer_credit"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_transfer_credit"
+                    android:gravity="center_vertical"
+                    android:padding="15dp"
+                    android:text="@string/transfer_credit"
                     android:textColor="#A6A6A6"
                     android:textSize="12sp"
                     android:textStyle="bold" />

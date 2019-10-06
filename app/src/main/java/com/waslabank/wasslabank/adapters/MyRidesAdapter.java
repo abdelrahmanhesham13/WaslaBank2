@@ -46,6 +46,7 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.MyRideVi
     Connector mConnector;
     ProgressDialog dialog;
     private final String TAG = MyRidesAdapter.class.getSimpleName();
+    String currentRequestId;
 
     public MyRidesAdapter(ArrayList<MyRideModel> rides, Context context, OnItemClicked onItemClicked) {
         this.rides = rides;
@@ -56,6 +57,8 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.MyRideVi
             public void onComplete(String tag, String response) {
                 if (Connector.checkStatus(response)) {
                     Toast.makeText(context, "Started", Toast.LENGTH_SHORT).show();
+                    context.startActivity(new Intent(context, LiveLocationMapsActivity.class)
+                            .putExtra("Request_id", "" + currentRequestId));
                 }
             }
         }, new Connector.ErrorCallback() {
@@ -88,7 +91,7 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.MyRideVi
         if (URLUtil.isValidUrl(rides.get(i).getUser().getImage()))
             Picasso.get().load(rides.get(i).getUser().getImage()).fit().centerCrop().into(myRideViewHolder.profileImage);
         else {
-            Picasso.get().load("http://www.cta3.com/waslabank/prod_img/" + rides.get(i).getUser().getImage()).fit().centerCrop().into(myRideViewHolder.profileImage);
+            Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + rides.get(i).getUser().getImage()).fit().centerCrop().into(myRideViewHolder.profileImage);
         }
         //myRideViewHolder.seats.setText(rides.get(i).getNumOfSeats());
 
@@ -139,14 +142,10 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.MyRideVi
                     //   finishTrip(rides.get(i).getId());
                     // dialog.show()
 
-                    context.startActivity(new Intent(context, LiveLocationMapsActivity.class)
-                            .putExtra("Request_id", "" + rides.get(i).getId()));
+
                 } else {
-                    mConnector.getRequest(TAG, "http://www.cta3.com/waslabank/api/start_request?id=" + rides.get(i).getId());
-                    if (rides.get(i).getFromId().equals("0") || rides.get(i).getUserId().equals("0")) {
-                    } else {
-                        myRideViewHolder.startRide.setText(context.getString(R.string.open_map));
-                    }
+                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/start_request?id=" + rides.get(i).getId());
+                    currentRequestId = rides.get(i).getId();
                 }
             }
         });

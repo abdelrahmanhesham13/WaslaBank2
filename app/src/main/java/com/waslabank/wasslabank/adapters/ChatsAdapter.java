@@ -49,7 +49,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatHolder> 
         if (URLUtil.isValidUrl(chats.get(i).getImage()))
             Picasso.get().load(chats.get(i).getImage()).fit().centerCrop().into(chatHolder.profileImage);
         else {
-            Picasso.get().load("http://www.cta3.com/waslabank/prod_img/" + chats.get(i).getImage()).fit().centerCrop().into(chatHolder.profileImage);
+            Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + chats.get(i).getImage()).fit().centerCrop().into(chatHolder.profileImage);
         }
     }
 

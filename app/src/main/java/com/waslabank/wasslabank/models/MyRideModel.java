@@ -25,9 +25,12 @@ public class MyRideModel implements Serializable {
     private String fromId;
     private UserModel user;
     private boolean upcoming;
-    private String distance;
+    private String distance = "0.0";
     private String seats;
     private String start;
+
+    public MyRideModel() {
+    }
 
     public MyRideModel(String id, String cityId, String address, String lon, String lat, String lonTo, String latTo
             , String status, String created, String updated, String userId, String addressTo, String cityTo

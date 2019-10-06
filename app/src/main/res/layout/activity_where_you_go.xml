@@ -30,6 +30,28 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/Credit"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"
+                android:textAlignment="center"
+                android:layout_height="wrap_content"
+                android:text="@string/Credit"
+                android:textColor="@color/Color_White"
+                android:layout_gravity="center" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:textAllCaps="false"
+                android:id="@+id/active_ride"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone"
+                android:textColor="@color/imagepicker_white"
+                android:background="@drawable/bg_button_red"
+                android:text="@string/open_active_ride"
+                android:layout_height="35dp" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

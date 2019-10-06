@@ -1,21 +1,28 @@
 package com.waslabank.wasslabank;
 // -->> To Do -> 73ml hena call ll individual Request (RequestID) lw fe offer 73ml button ywdy ll notification
+
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,8 +36,11 @@ import com.squareup.picasso.Picasso;
 import com.waslabank.wasslabank.models.ChatModel;
 import com.waslabank.wasslabank.models.MyRideModel;
 import com.waslabank.wasslabank.models.NotificationModel;
+import com.waslabank.wasslabank.models.Offer;
+import com.waslabank.wasslabank.models.OfferModel;
 import com.waslabank.wasslabank.models.RideModel;
 import com.waslabank.wasslabank.models.SingleRequestModel.Example;
+import com.waslabank.wasslabank.models.SingleRequestModel.User;
 import com.waslabank.wasslabank.models.StatusModel;
 import com.waslabank.wasslabank.models.UserModel;
 import com.waslabank.wasslabank.networkUtils.Connector;
@@ -87,13 +97,19 @@ public class ConfirmRideRequest extends AppCompatActivity {
     MyRideModel mMyRideMode;
     NotificationModel mNotificationModel;
 
+    @BindView(R.id.offers_parent)
+    LinearLayout offersParent;
+
     Connector mConnector;
     Connector mConnectorGetRequest;
     Connector mConnectorAcceptOffer;
     Connector mConnectorGetUser;
     ProgressDialog mProgressDialog;
+    Connector mConnectorRate;
 
+    float mRatingNumber;
     Connector mConnectorSendMessage;
+    AlertDialog alertDialog;
 
     boolean mLocated = false;
     private ChatModel mChatModel;
@@ -146,6 +162,21 @@ public class ConfirmRideRequest extends AppCompatActivity {
             }
         });
 
+        mConnectorRate = new Connector(this, new Connector.LoadCallback() {
+            @Override
+            public void onComplete(String tag, String response) {
+                alertDialog.dismiss();
+                dialog.show();
+                finishTrip(getIntent().getStringExtra("RequestID"), "");
+            }
+        }, new Connector.ErrorCallback() {
+            @Override
+            public void onError(VolleyError error) {
+                alertDialog.dismiss();
+                Helper.showSnackBarMessage(getString(R.string.error), ConfirmRideRequest.this);
+            }
+        });
+
         mConnectorGetUser = new Connector(this, new Connector.LoadCallback() {
             @Override
             public void onComplete(String tag, String response) {
@@ -174,15 +205,15 @@ public class ConfirmRideRequest extends AppCompatActivity {
                     mDistanceTextView.setText(String.format(Locale.ENGLISH, "%.2f KM", Float.valueOf(mRideModel.getDistance())));
                     if (getIntent().getStringExtra("type").equals("offer")) {
                         if (mUserModel.getId().equals(mRideModel.getUserId()))
-                            mConnectorGetUser.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_user?id=" + mRideModel.getFromId());
+                            mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mRideModel.getFromId());
                         else
-                            mConnectorGetUser.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_user?id=" + mRideModel.getUserId());
+                            mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mRideModel.getUserId());
 
                     } else {
                         if (mUserModel.getId().equals(mMyRideMode.getUserId()))
-                            mConnectorGetUser.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getFromId());
+                            mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getFromId());
                         else
-                            mConnectorGetUser.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getUserId());
+                            mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getUserId());
                     }
                 } else {
                     Helper.showSnackBarMessage(getString(R.string.error), ConfirmRideRequest.this);
@@ -201,9 +232,9 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 mProgressDialog.dismiss();
                 if (Connector.checkStatus(response)) {
                     finish();
-                    startActivity(new Intent(ConfirmRideRequest.this,MyRidesActivity.class));
+                    startActivity(new Intent(ConfirmRideRequest.this, MyRidesActivity.class));
                     Toast.makeText(ConfirmRideRequest.this, getString(R.string.registered_successfully)
-                            +getString(R.string.youwillbeable), Toast.LENGTH_LONG).show();
+                            + getString(R.string.youwillbeable), Toast.LENGTH_LONG).show();
                 } else {
                     Helper.showSnackBarMessage(getString(R.string.error), ConfirmRideRequest.this);
                 }
@@ -237,8 +268,8 @@ public class ConfirmRideRequest extends AppCompatActivity {
             }
         });
         mNumberButton.setRange(1, 4);
-        if(getIntent().hasExtra("Seats")){
-            mNumberButton.setRange(1,Integer.parseInt(getIntent().getStringExtra("Seats")));
+        if (getIntent().hasExtra("Seats")) {
+            mNumberButton.setRange(1, Integer.parseInt(getIntent().getStringExtra("Seats")));
         }
         mNumberButton.setNumber("1");
         if (getSupportActionBar() != null)
@@ -247,19 +278,22 @@ public class ConfirmRideRequest extends AppCompatActivity {
         if (getIntent() != null) {
             if (getIntent().getStringExtra("type").equals("show")) {
                 getIndividualRequest(getIntent().getStringExtra("RequestID"));
+                mMyRideMode = new MyRideModel();
+                mMyRideMode.setUser(new UserModel());
                 offers.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         finish();
-                        startActivity(new Intent(ConfirmRideRequest.this,NotificationsActivity.class));
+                        startActivity(new Intent(ConfirmRideRequest.this, NotificationsActivity.class));
                     }
                 });
                 setTitle(getString(R.string.ride_details));
-                mMyRideMode = (MyRideModel) getIntent().getSerializableExtra("request");
+                if (getIntent().hasExtra("request"))
+                    mMyRideMode = (MyRideModel) getIntent().getSerializableExtra("request");
                 if (URLUtil.isValidUrl(mMyRideMode.getUser().getImage()))
                     Picasso.get().load(mMyRideMode.getUser().getImage()).fit().centerCrop().into(mProfileImage);
                 else {
-                    Picasso.get().load("http://www.cta3.com/waslabank/prod_img/" + mMyRideMode.getUser().getImage()).fit().centerCrop().into(mProfileImage);
+                    Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + mMyRideMode.getUser().getImage()).fit().centerCrop().into(mProfileImage);
                 }
                 mNameTextView.setText(mMyRideMode.getUser().getName());
                 mCarDetailsTextView.setText(mMyRideMode.getUser().getCarName());
@@ -271,11 +305,11 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 mNumberButton.setVisibility(View.GONE);
                 mProgressDialog = Helper.showProgressDialog(this, getString(R.string.loading), false);
                 if (mUserModel.getId().equals(mMyRideMode.getUserId()))
-                    mConnectorGetUser.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getFromId());
+                    mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getFromId());
                 else
-                    mConnectorGetUser.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getUserId());
+                    mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getUserId());
 
-                if ((mMyRideMode.getStatus().equals("1")||mMyRideMode.getStatus().equals("2"))&&mMyRideMode.isUpcoming()) {
+                if ((mMyRideMode.getStatus().equals("1") || mMyRideMode.getStatus().equals("2")) && mMyRideMode.isUpcoming()) {
                     mConfirmButton.setText(getString(R.string.message));
                     Call.setVisibility(View.VISIBLE);
                     Call.setOnClickListener(new View.OnClickListener() {
@@ -292,17 +326,16 @@ public class ConfirmRideRequest extends AppCompatActivity {
                         }
                     });
                     if (!getIntent().getStringExtra("Status").equals("4")) {
-                        finishTrip.setVisibility(View.VISIBLE);
+                        finishTrip.setVisibility(View.GONE);
                     }
                     finishTrip.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.show();
-                            finishTrip(getIntent().getStringExtra("RequestID"), "");
+                            show();
                         }
                     });
                     if ((getIntent().getStringExtra("user_id").equals(Helper.getUserSharedPreferences(this).getId()))) {
-                    }else {
+                    } else {
                         finishTrip.setVisibility(View.GONE);
                     }
                     mapLiveLocation.setVisibility(View.VISIBLE);
@@ -324,7 +357,7 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 if (URLUtil.isValidUrl(mNotificationModel.getmUserModel().getImage()))
                     Picasso.get().load(mNotificationModel.getmUserModel().getImage()).fit().centerCrop().into(mProfileImage);
                 else {
-                    Picasso.get().load("http://www.cta3.com/waslabank/prod_img/" + mNotificationModel.getmUserModel().getImage()).fit().centerCrop().into(mProfileImage);
+                    Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + mNotificationModel.getmUserModel().getImage()).fit().centerCrop().into(mProfileImage);
                    /* Picasso.get().load("http://www.cta3.com/waslabank/prod_img/" + mMyRideMode.getUser()
                             .getImage()).fit().centerCrop().into(mProfileImage);*/
                 }
@@ -332,20 +365,20 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 mCarDetailsTextView.setText(mNotificationModel.getmUserModel().getCarName());
                 mNumberButton.setVisibility(View.GONE);
                 mProgressDialog = Helper.showProgressDialog(this, getString(R.string.loading), false);
-                mConnectorGetRequest.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_request?id=" + mNotificationModel.getRequestId());
+                mConnectorGetRequest.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_request?id=" + mNotificationModel.getRequestId());
                 if (mNotificationModel.getStatus().equals("0")) {
                     cancell.setVisibility(View.VISIBLE);
                     mConfirmButton.setText(getString(R.string.accept));
                     cancell.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            reject_offer(""+mNotificationModel.getUserId(),""+mNotificationModel.getFromId(),""+mNotificationModel.getRequestId());
+                            reject_offer("" + mNotificationModel.getUserId(), "" + mNotificationModel.getFromId(), "" + mNotificationModel.getRequestId());
                         }
                     });
                 } else {
                     mConfirmButton.setText(getString(R.string.message));
                     ///Comment
-                     Call.setVisibility(View.VISIBLE);
+                    Call.setVisibility(View.VISIBLE);
                     Call.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -360,20 +393,19 @@ public class ConfirmRideRequest extends AppCompatActivity {
                         }
                     });
                     if (!getIntent().getStringExtra("Status").equals("4")) {
-                        finishTrip.setVisibility(View.VISIBLE);
+                        finishTrip.setVisibility(View.GONE);
                     }
                     finishTrip.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.show();
-                            finishTrip(getIntent().getStringExtra("RequestID"), "");
+                            show();
                         }
                     });
                     if ((getIntent().getStringExtra("user_id").equals(Helper.getUserSharedPreferences(this).getId()))) {
-                    }else {
+                    } else {
                         finishTrip.setVisibility(View.GONE);
                     }
-                        mapLiveLocation.setVisibility(View.VISIBLE);
+                    mapLiveLocation.setVisibility(View.VISIBLE);
                     mapLiveLocation.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -390,7 +422,7 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 if (URLUtil.isValidUrl(mRideModel.getUser().getImage()))
                     Picasso.get().load(mRideModel.getUser().getImage()).fit().centerCrop().into(mProfileImage);
                 else {
-                    Picasso.get().load("http://www.cta3.com/waslabank/prod_img/" + mRideModel.getUser().getImage()).fit().centerCrop().into(mProfileImage);
+                    Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + mRideModel.getUser().getImage()).fit().centerCrop().into(mProfileImage);
                 }
                 mNameTextView.setText(mRideModel.getUser().getName());
                 mCarDetailsTextView.setText(mRideModel.getUser().getCarName());
@@ -401,9 +433,9 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 mDistanceTextView.setText(String.format(Locale.ENGLISH, "%.2f KM", Float.valueOf(mRideModel.getDistance())));
                 mProgressDialog = Helper.showProgressDialog(this, getString(R.string.loading), false);
                 if (mUserModel.getId().equals(mRideModel.getUserId()))
-                    mConnectorGetUser.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_user?id=" + mRideModel.getFromId());
+                    mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mRideModel.getFromId());
                 else
-                    mConnectorGetUser.getRequest(TAG, "http://www.cta3.com/waslabank/api/get_user?id=" + mRideModel.getUserId());
+                    mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mRideModel.getUserId());
             }
 
         }
@@ -415,25 +447,25 @@ public class ConfirmRideRequest extends AppCompatActivity {
                     getLocation();
                 } else if (mConfirmButton.getText().equals(getString(R.string.accept))) {
                     mProgressDialog.show();
-                    mConnectorAcceptOffer.getRequest(TAG, "http://www.cta3.com/waslabank/api/accept_offer?id=" + mNotificationModel.getRequestId() + "&from_id=" + mNotificationModel.getFromId() + "&user_id=" + mNotificationModel.getUserId());
+                    mConnectorAcceptOffer.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/accept_offer?id=" + mNotificationModel.getRequestId() + "&from_id=" + mNotificationModel.getFromId() + "&user_id=" + mNotificationModel.getUserId());
                 } else {
                     if (getIntent().getStringExtra("type").equals("offer")) {
                         if (mUserModel.getId().equals(mRideModel.getUserId())) {
-                            String url = "http://www.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mRideModel.getFromId() + "&request_id=" + mRideModel.getId();
+                            String url = "http://www.as.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mRideModel.getFromId() + "&request_id=" + mRideModel.getId();
                             Helper.writeToLog(url);
                             mConnectorSendMessage.getRequest(TAG, url);
                         } else {
-                            String url = "http://www.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mRideModel.getUserId() + "&request_id=" + mRideModel.getId();
+                            String url = "http://www.as.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mRideModel.getUserId() + "&request_id=" + mRideModel.getId();
                             Helper.writeToLog(url);
                             mConnectorSendMessage.getRequest(TAG, url);
                         }
                     } else {
                         if (mUserModel.getId().equals(mMyRideMode.getUserId())) {
-                            String url = "http://www.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mMyRideMode.getFromId() + "&request_id=" + mMyRideMode.getId();
+                            String url = "http://www.as.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mMyRideMode.getFromId() + "&request_id=" + mMyRideMode.getId();
                             Helper.writeToLog(url);
                             mConnectorSendMessage.getRequest(TAG, url);
                         } else {
-                            String url = "http://www.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mMyRideMode.getUserId() + "&request_id=" + mMyRideMode.getId();
+                            String url = "http://www.as.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mMyRideMode.getUserId() + "&request_id=" + mMyRideMode.getId();
                             Helper.writeToLog(url);
                             mConnectorSendMessage.getRequest(TAG, url);
                         }
@@ -462,7 +494,7 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 if (lat != 0 && lon != 0 && !mLocated) {
                     mLocated = true;
                     mProgressDialog = Helper.showProgressDialog(ConfirmRideRequest.this, getString(R.string.loading), false);
-                    mConnector.getRequest(TAG, "http://www.cta3.com/waslabank/api/send_offer?request_id=" + mRideModel.getId() + "&user_id=" + mRideModel.getUserId() + "&longitude=" + lon + "&latitude=" + lat + "&address=address&distance=100&from_id=" + Helper.getUserSharedPreferences(ConfirmRideRequest.this).getId() + "&seats=" + mNumberButton.getNumber());
+                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/send_offer?request_id=" + mRideModel.getId() + "&user_id=" + mRideModel.getUserId() + "&longitude=" + lon + "&latitude=" + lat + "&address=address&distance=100&from_id=" + Helper.getUserSharedPreferences(ConfirmRideRequest.this).getId() + "&seats=" + mNumberButton.getNumber());
                     mTracker.stopUsingGPS();
                 }
             }
@@ -472,7 +504,7 @@ public class ConfirmRideRequest extends AppCompatActivity {
             if (location != null) {
                 if (location.getLatitude() != 0 && location.getLongitude() != 0 && !mLocated) {
                     mProgressDialog = Helper.showProgressDialog(ConfirmRideRequest.this, getString(R.string.loading), false);
-                    mConnector.getRequest(TAG, "http://www.cta3.com/waslabank/api/send_offer?request_id=" + mRideModel.getId() + "&user_id=" + mRideModel.getUserId() + "&longitude=" + location.getLongitude() + "&latitude=" + location.getLatitude() + "&address=address&distance=100&from_id=" + Helper.getUserSharedPreferences(ConfirmRideRequest.this).getId() + "&seats=" + mNumberButton.getNumber());
+                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/send_offer?request_id=" + mRideModel.getId() + "&user_id=" + mRideModel.getUserId() + "&longitude=" + location.getLongitude() + "&latitude=" + location.getLatitude() + "&address=address&distance=100&from_id=" + Helper.getUserSharedPreferences(ConfirmRideRequest.this).getId() + "&seats=" + mNumberButton.getNumber());
                     mLocated = true;
                     mTracker.stopUsingGPS();
                 }
@@ -488,15 +520,15 @@ public class ConfirmRideRequest extends AppCompatActivity {
         Connector.connectionServices connectionService =
                 retrofit.create(Connector.connectionServices.class);
 
-        connectionService.update_request_status( "4", id+"").enqueue(new Callback<StatusModel>() {
+        connectionService.update_request_status("4", id + "").enqueue(new Callback<StatusModel>() {
             @Override
             public void onResponse(Call<StatusModel> call, Response<StatusModel> response) {
                 dialog.dismiss();
                 StatusModel statusModel = response.body();
                 if (statusModel.getStatus()) {
                     finish();
-                }else{
-                    Toast.makeText(ConfirmRideRequest.this, "false"+id, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ConfirmRideRequest.this, "false" + id, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -504,7 +536,7 @@ public class ConfirmRideRequest extends AppCompatActivity {
             public void onFailure(Call<StatusModel> call, Throwable t) {
                 dialog.dismiss();
 
-                Toast.makeText(ConfirmRideRequest.this, "faslse ++" +t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ConfirmRideRequest.this, "faslse ++" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -524,6 +556,7 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 StatusModel statusModel = response.body();
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri
                         .parse("tel:" + statusModel.getUser().getMobile()));
+                Helper.writeToLog(statusModel.getUser().getMobile());
                 if (ActivityCompat.checkSelfPermission(ConfirmRideRequest.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -545,6 +578,7 @@ public class ConfirmRideRequest extends AppCompatActivity {
             }
         });
     }
+
     private void getIndividualRequest(String id) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Connector.connectionServices.BaseURL)
@@ -556,10 +590,41 @@ public class ConfirmRideRequest extends AppCompatActivity {
         connectionService.getSingleRequest(id).enqueue(new Callback<Example>() {
             @Override
             public void onResponse(Call<Example> call, Response<Example> response) {
-                Example example=response.body();
-                if(example.getStatus()){
-                    if(example.getRequest().getOffers().size()>0){
-                        offers.setVisibility(View.VISIBLE);
+                Example example = response.body();
+                if (example.getStatus()) {
+                    if (example.getRequest().getOffers().size() > 0) {
+                        //offers.setVisibility(View.VISIBLE);
+                        offersParent.setVisibility(View.VISIBLE);
+                        for (int i = 0; i < example.getRequest().getOffers().size(); i++) {
+                            OfferModel offer = example.getRequest().getOffers().get(i).getOffer();
+                            User from = example.getRequest().getOffers().get(i).getClient();
+                            View v = getLayoutInflater().inflate(R.layout.list_offer_item, null);
+                            ((TextView) v.findViewById(R.id.name)).setText(example.getRequest().getOffers().get(i).getClient().getName());
+                            ((TextView) v.findViewById(R.id.car)).setText(example.getRequest().getOffers().get(i).getClient().getCarName());
+                            ((TextView) v.findViewById(R.id.from_place)).setText(mFromPlaceTextView.getText());
+                            ((TextView) v.findViewById(R.id.to_place)).setText(mToPlaceTextView.getText());
+                            if (URLUtil.isValidUrl(example.getRequest().getOffers().get(i).getClient().getImage())) {
+                                Picasso.get().load(example.getRequest().getOffers().get(i).getClient().getImage()).into((ImageView) v.findViewById(R.id.profile_image));
+                            } else {
+                                Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + example.getRequest().getOffers().get(i).getClient().getImage()).into((ImageView) v.findViewById(R.id.profile_image));
+
+                            }
+                            ((Button) v.findViewById(R.id.accept)).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mConnectorAcceptOffer.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/accept_offer?id=" + offer.getRequestId() + "&from_id=" + from.getId() + "&user_id=" + Helper.getUserSharedPreferences(ConfirmRideRequest.this).getId());
+                                }
+                            });
+
+                            ((Button) v.findViewById(R.id.reject)).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    reject_offer(Helper.getUserSharedPreferences(ConfirmRideRequest.this).getId(), from.getId(), offer.getRequestId());
+                                }
+                            });
+
+                            offersParent.addView(v);
+                        }
                     }
                 }
             }
@@ -571,8 +636,9 @@ public class ConfirmRideRequest extends AppCompatActivity {
         });
 
     }
-    private void reject_offer(String userId,String fromId,String Id) {
-        ProgressDialog p=new ProgressDialog(ConfirmRideRequest.this);
+
+    private void reject_offer(String userId, String fromId, String Id) {
+        ProgressDialog p = new ProgressDialog(ConfirmRideRequest.this);
         p.setMessage("Loading...");
         p.show();
         Retrofit retrofit = new Retrofit.Builder()
@@ -582,14 +648,14 @@ public class ConfirmRideRequest extends AppCompatActivity {
         Connector.connectionServices connectionService =
                 retrofit.create(Connector.connectionServices.class);
 
-        connectionService.reject_offer(userId,fromId,Id).enqueue(new Callback<Example>() {
+        connectionService.reject_offer(userId, fromId, Id).enqueue(new Callback<Example>() {
             @Override
             public void onResponse(Call<Example> call, Response<Example> response) {
-                Log.d("TTTT", "onResponse: raw"+response.raw());
-                Log.d("TTTT", "onResponse: raw"+response.toString());
+                Log.d("TTTT", "onResponse: raw" + response.raw());
+                Log.d("TTTT", "onResponse: raw" + response.toString());
                 p.dismiss();
-                Example example=response.body();
-                if(example.getStatus()){
+                Example example = response.body();
+                if (example.getStatus()) {
                     Toast.makeText(ConfirmRideRequest.this, "Request Rejected Successfully", Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -602,6 +668,74 @@ public class ConfirmRideRequest extends AppCompatActivity {
 
             }
         });
+    }
+
+
+    private void show() {
+        final android.app.AlertDialog.Builder dialogBuilder = new android.app.AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_rating, null);
+        dialogBuilder.setView(dialogView);
+        final RatingBar rating = dialogView.findViewById(R.id.rating_bar_2);
+        final Button rate = dialogView.findViewById(R.id.btn_rate);
+        final EditText comment = dialogView.findViewById(R.id.comment);
+        rating.setIsIndicator(false);
+        alertDialog = dialogBuilder.create();
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+        alertDialog.show();
+        rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                mRatingNumber = rating;
+            }
+        });
+        rate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String commentText = comment.getText().toString();
+                if (TextUtils.isEmpty(commentText)) {
+                    Helper.showSnackBarMessage(getString(R.string.enter_comment), ConfirmRideRequest.this);
+                } else {
+                    if (mMyRideMode != null) {
+                        if (mUserModel.getId().equals(mMyRideMode.getFromId())) {
+                            if (getIntent() != null && getIntent().hasExtra("ride_2")) {
+                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getUserId());
+                            } else {
+                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getUserId());
+
+                            }
+                        } else {
+                            if (getIntent() != null && getIntent().hasExtra("ride_2")) {
+                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getFromId());
+                            } else {
+                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getFromId());
+
+                            }
+                        }
+                    } else {
+                        if (mRideModel != null) {
+                            if (mUserModel.getId().equals(mRideModel.getFromId())) {
+                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getFromId());
+                            } else {
+                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getFromId());
+
+                            }
+                        } else {
+                            if (getIntent() != null && getIntent().hasExtra("ride_2")) {
+                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId());
+                            } else {
+                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId());
+
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+
     }
 
 }

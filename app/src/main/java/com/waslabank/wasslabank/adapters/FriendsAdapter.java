@@ -1,19 +1,26 @@
 package com.waslabank.wasslabank.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.squareup.picasso.Picasso;
+import com.waslabank.wasslabank.FriendsRidesActivity;
 import com.waslabank.wasslabank.R;
 import com.waslabank.wasslabank.models.UserModel;
 import com.waslabank.wasslabank.networkUtils.Connector;
@@ -43,7 +50,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
             @Override
             public void onComplete(String tag, String response) {
                 if (Connector.checkStatus(response))
-                Helper.showSnackBarMessage(Connector.getMessage(response),(AppCompatActivity)context);
+                    Helper.showSnackBarMessage(Connector.getMessage(response), (AppCompatActivity) context);
+                else
+                    Helper.showSnackBarMessage(Connector.getMessage(response), (AppCompatActivity) context);
             }
         }, new Connector.ErrorCallback() {
             @Override
@@ -56,42 +65,77 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friend_item,viewGroup,false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friend_item, viewGroup, false);
         return new UserViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder userViewHolder, int i) {
         userViewHolder.name.setText(users.get(i).getName());
-        if (type == 1){
-            userViewHolder.mAddFriendButton.setVisibility(View.VISIBLE);
-        } else {
-            userViewHolder.mAddFriendButton.setVisibility(View.GONE);
-        }
-        if (URLUtil.isValidUrl(users.get(i).getImage()))
-            Picasso.get().load(users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
-        else {
-            Picasso.get().load("http://www.cta3.com/waslabank/prod_img/" + users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
-        }
-
-        if (users.get(i).isFriend()){
-            userViewHolder.mAddFriendButton.setText("Un friend");
-        } else {
-            userViewHolder.mAddFriendButton.setText("Add friend");
-        }
-
-        userViewHolder.mAddFriendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (users.get(i).isFriend()) {
-                    users.get(i).setFriend(false);
-                } else {
-                    users.get(i).setFriend(true);
-                }
-                notifyItemChanged(i);
-                mConnector.getRequest("","http://www.cta3.com/waslabank/api/add_friend?from_id=" + Helper.getUserSharedPreferences(context).getId() + "&to_id=" + users.get(userViewHolder.getAdapterPosition()).getId());
+        if (type == 0 || type == 1) {
+            if (type == 1) {
+                userViewHolder.mAddFriendButton.setVisibility(View.VISIBLE);
+            } else {
+                //userViewHolder.mAddFriendButton.setVisibility(View.GONE);
             }
-        });
+            if (URLUtil.isValidUrl(users.get(i).getImage()))
+                Picasso.get().load(users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
+            else {
+                Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
+            }
+
+            if (type == 0) {
+                userViewHolder.mShowRidesButton.setVisibility(View.VISIBLE);
+                userViewHolder.mAddFriendButton.setText("Un friend");
+            } else {
+                userViewHolder.mShowRidesButton.setVisibility(View.GONE);
+                userViewHolder.mAddFriendButton.setText("Add friend");
+            }
+
+            if (type == 1) {
+                if (users.get(i).isFriend()) {
+                    userViewHolder.mShowRidesButton.setVisibility(View.VISIBLE);
+                    userViewHolder.mAddFriendButton.setText("Un friend");
+                } else {
+                    userViewHolder.mShowRidesButton.setVisibility(View.GONE);
+                    userViewHolder.mAddFriendButton.setText("Add friend");
+                }
+            }
+
+            userViewHolder.mShowRidesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context, FriendsRidesActivity.class).putExtra("user_id", users.get(i).getId()));
+                }
+            });
+
+            userViewHolder.mAddFriendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (users.get(i).isFriend()) {
+                        users.get(i).setFriend(false);
+                    } else {
+                        users.get(i).setFriend(true);
+                    }
+                    notifyItemChanged(i);
+                    mConnector.getRequest("", "http://www.as.cta3.com/waslabank/api/add_friend?from_id=" + Helper.getUserSharedPreferences(context).getId() + "&to_id=" + users.get(userViewHolder.getAdapterPosition()).getId());
+                }
+            });
+        } else {
+            if (URLUtil.isValidUrl(users.get(i).getImage()))
+                Picasso.get().load(users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
+            else {
+                Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
+            }
+            userViewHolder.mShowRidesButton.setVisibility(View.GONE);
+            userViewHolder.mAddFriendButton.setVisibility(View.GONE);
+            userViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDialog(users.get(i).getId());
+                }
+            });
+        }
 
     }
 
@@ -109,6 +153,8 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
         TextView name;
         @BindView(R.id.add_friend)
         Button mAddFriendButton;
+        @BindView(R.id.show_rides)
+        Button mShowRidesButton;
 
 
         UserViewHolder(View itemView) {
@@ -127,4 +173,38 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
     public interface OnItemClicked {
         void setOnItemClicked(int position);
     }
+
+
+    private void showDialog(String toId) {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+
+        final EditText edittext = new EditText(context);
+        alert.setMessage("Enter the credit you want to transfer");
+        alert.setTitle("Transfer credit");
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //What ever you want to do with the value
+                Editable YouEditTextValue = edittext.getText();
+                if (!YouEditTextValue.toString().isEmpty())
+                    mConnector.getRequest("", "http://www.as.cta3.com/waslabank/api/transfer_credits?from_id=" + Helper.getUserSharedPreferences(context).getId() + "&to_id=" + toId + "&credit=" + YouEditTextValue.toString());
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // what ever you want to do with No option.
+                dialog.dismiss();
+            }
+        });
+
+        alert.show();
+    }
+
 }

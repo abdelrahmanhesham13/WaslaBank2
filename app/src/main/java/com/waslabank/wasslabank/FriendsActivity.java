@@ -70,20 +70,37 @@ public class FriendsActivity extends AppCompatActivity {
             }
         });
 
+        if (getIntent().hasExtra("type")) {
+            if (getIntent().getStringExtra("type").equals("transfer_credit")) {
+                mFriendsAdapter = new FriendsAdapter(mUserModels, this, new FriendsAdapter.OnItemClicked() {
+                    @Override
+                    public void setOnItemClicked(int position) {
 
-        mFriendsAdapter = new FriendsAdapter(mUserModels, this, new FriendsAdapter.OnItemClicked() {
-            @Override
-            public void setOnItemClicked(int position) {
+                    }
+                }, 3);
+            } else {
+                mFriendsAdapter = new FriendsAdapter(mUserModels, this, new FriendsAdapter.OnItemClicked() {
+                    @Override
+                    public void setOnItemClicked(int position) {
 
+                    }
+                }, 0);
             }
-        },0);
+        } else {
+            mFriendsAdapter = new FriendsAdapter(mUserModels, this, new FriendsAdapter.OnItemClicked() {
+                @Override
+                public void setOnItemClicked(int position) {
+
+                }
+            }, 0);
+        }
         mFriendsRecycler.setHasFixedSize(true);
         mFriendsRecycler.setLayoutManager(new LinearLayoutManager(this));
         mFriendsRecycler.setAdapter(mFriendsAdapter);
 
 
         mProgressDialog = Helper.showProgressDialog(this,getString(R.string.loading),false);
-        mConnector.getRequest(TAG,"https://www.cta3.com/waslabank/api/get_friends?user_id=" + Helper.getUserSharedPreferences(this).getId());
+        mConnector.getRequest(TAG,"http://www.as.cta3.com/waslabank/api/get_friends?user_id=" + Helper.getUserSharedPreferences(this).getId());
     }
 
 

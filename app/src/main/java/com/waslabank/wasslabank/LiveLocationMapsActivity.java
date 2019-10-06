@@ -1,23 +1,35 @@
 package com.waslabank.wasslabank;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
@@ -42,6 +54,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.waslabank.wasslabank.models.LatLngModel;
+import com.waslabank.wasslabank.models.RequestModel;
 import com.waslabank.wasslabank.models.StatusModel;
 import com.waslabank.wasslabank.networkUtils.Connector;
 import com.waslabank.wasslabank.utils.Helper;
@@ -54,13 +67,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class LiveLocationMapsActivity extends FragmentActivity implements OnMapReadyCallback, RoutingListener {
+public class LiveLocationMapsActivity extends AppCompatActivity implements OnMapReadyCallback, RoutingListener {
 
     private GoogleMap mMap;
     private ArrayList<Polyline> polylines;
     LatLng start, end, userPoin, car;
     int countr = 0;
-    Button picked;
+    Button picked,finished;
     String Request_id, user_id = "";
     String driver_id = "";
     MarkerOptions options1, options2, options3, options4;
@@ -68,19 +81,41 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
     Marker currentMarker = null;
     FirebaseDatabase database;
     DatabaseReference myRef;
+    private ProgressDialog dialog;
     LatLngModel latLngModel;
+    RequestModel requestModel;
+    Location lastLocation;
+
+    private static final String TAG = "LiveLocationMapsActivit";
+
+    Connector mConnectorRate;
+
+    float mRatingNumber;
+    AlertDialog alertDialog;
     private static final int[] COLORS = new int[]{R.color.colorPrimaryDark, R.color.colorPrimary
             , R.color.colorPrimarylight, R.color.colorAccent, R.color.primary_dark_material_light};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_live_location_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         user_id = Helper.getUserSharedPreferences(this).getId();
         picked = findViewById(R.id.picked);
+        finished = findViewById(R.id.finish);
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Please wait..");
+        finished.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                dialog.show();
+//                finishTrip(Request_id, "");
+                show();
+            }
+        });
         Request_id = getIntent().getStringExtra("Request_id");
         picked.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +123,23 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
                 pickUser(""+user_id,""+Request_id);
                 markerUser.remove();
                 markerStart.remove();
+                drawRoute1(car,end,null,null);
+            }
+        });
+
+
+        mConnectorRate = new Connector(this, new Connector.LoadCallback() {
+            @Override
+            public void onComplete(String tag, String response) {
+                alertDialog.dismiss();
+                                dialog.show();
+               finishTrip(Request_id, "");
+            }
+        }, new Connector.ErrorCallback() {
+            @Override
+            public void onError(VolleyError error) {
+                alertDialog.dismiss();
+                Helper.showSnackBarMessage(getString(R.string.error), LiveLocationMapsActivity.this);
             }
         });
         mapFragment.getMapAsync(this);
@@ -96,6 +148,40 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
         myRef = database.getReference("Trips");
 
 
+    }
+
+    private void finishTrip(String id, String status) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Connector.connectionServices.BaseURL)
+                .addConverterFactory(GsonConverterFactory
+                        .create(new Gson())).build();
+        Connector.connectionServices connectionService =
+                retrofit.create(Connector.connectionServices.class);
+
+        Location start = new Location("");
+        start.setLatitude(this.start.latitude);
+        start.setLongitude(this.start.longitude);
+
+        connectionService.update_request_status(String.valueOf(lastLocation.getLongitude()),String.valueOf(lastLocation.getLatitude()),Helper.getUserSharedPreferences(this).getId(),id + "","4", String.valueOf(start.distanceTo(lastLocation) / 1000.0) , "extra").enqueue(new Callback<StatusModel>() {
+            @Override
+            public void onResponse(Call<StatusModel> call, Response<StatusModel> response) {
+                dialog.dismiss();
+                StatusModel statusModel = response.body();
+                if (statusModel.getStatus()) {
+                    //finish();
+                    startActivity(new Intent(LiveLocationMapsActivity.this, WhereYouGoActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                }else{
+                    Toast.makeText(LiveLocationMapsActivity.this, "false"+id, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<StatusModel> call, Throwable t) {
+                dialog.dismiss();
+
+                Toast.makeText(LiveLocationMapsActivity.this, "faslse ++" +t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -136,9 +222,10 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
 
         }
 
-        locationManager.requestLocationUpdates(provider, 0, 50, new LocationListener() {
+        locationManager.requestLocationUpdates(provider, 0, 1, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                lastLocation = location;
                 //userID -->Da el swaa2
                 Log.d("TTT", "Over all onLocationChanged: lat-->" + location.getLatitude() + " long--> " + location.getLongitude());
 
@@ -150,10 +237,11 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
                     markerUpdated = mMap.addMarker(options4);
                     markerUpdated.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.update));
                     CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
-                    mMap.moveCamera(center);
+                    //mMap.animateCamera(center);
                     latLngModel = new LatLngModel(location.getLatitude() + "", "" + location.getLongitude());
-                    myRef.child(driver_id).setValue(latLngModel);
-
+                    //myRef.child(driver_id).setValue(latLngModel);
+                    myRef.child(driver_id).child("lat").setValue(latLngModel.getLat());
+                    myRef.child(driver_id).child("lng").setValue(latLngModel.getLng());
                 }
                /* Log.d("TTT", "onLocationChanged: lat-->"+location.getLatitude()+" long--> "+location.getLongitude());
                 sendNewLocation("1",""+location.getLatitude(),""+location.getLongitude(),"");
@@ -186,31 +274,38 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
 
     }
 
-    public void drawRoute(LatLng start, LatLng end) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(start));
-        Routing routing = new Routing.Builder()
-                .travelMode(Routing.TravelMode.DRIVING)
-                .withListener(this)
-                .waypoints(start, end)
-                .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
-                .build();
-        routing.execute();
-    }
-
-    public void drawRoute1(LatLng start, LatLng end) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(start));
-        Routing routing1 = new Routing.Builder()
-                .travelMode(Routing.TravelMode.DRIVING)
-                .withListener(this)
-                .waypoints(start, end)
-                .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
-                .build();
-        routing1.execute();
+    public void drawRoute1(LatLng start,LatLng point,LatLng point2, LatLng end) {
+        if (point2 == null) {
+            Routing routing1 = new Routing.Builder()
+                    .travelMode(Routing.TravelMode.DRIVING)
+                    .withListener(this)
+                    .waypoints(start, point)
+                    .key("AIzaSyCE29pCYj3ntftgARbTP0FA8xZyLBCF7f8")
+                    .build();
+            routing1.execute();
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(start));
+            Routing routing1 = new Routing.Builder()
+                    .travelMode(Routing.TravelMode.DRIVING)
+                    .withListener(this)
+                    .waypoints(start, point, point2, end)
+                    .key("AIzaSyCE29pCYj3ntftgARbTP0FA8xZyLBCF7f8")
+                    .build();
+            routing1.execute();
+        }
     }
 
     ///Routing Lisenrs
     @Override
     public void onRoutingFailure(RouteException e) {
+        e.printStackTrace();
+        Routing routing1 = new Routing.Builder()
+                .travelMode(Routing.TravelMode.DRIVING)
+                .withListener(this)
+                .waypoints(start, car, end)
+                .key("AIzaSyCE29pCYj3ntftgARbTP0FA8xZyLBCF7f8")
+                .build();
+        routing1.execute();
         if (e != null) {
             // Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             Log.d("TTT", "onRoutingFailure: " + e.getMessage());
@@ -228,27 +323,21 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
 
-        if (polylines.size() > 1) {
+        if (polylines.size() >= 1) {
             for (Polyline poly : polylines) {
                 poly.remove();
             }
         }
 
         polylines = new ArrayList<>();
-        //add route(s) to the map.
-        for (int i = 0; i < route.size(); i++) {
-
-            //In case of more than 5 alternative routes
-            int colorIndex = i % COLORS.length;
 
             PolylineOptions polyOptions = new PolylineOptions();
-            polyOptions.color(getResources().getColor(COLORS[colorIndex]));
-            polyOptions.width(10 + i * 3);
-            polyOptions.addAll(route.get(i).getPoints());
+            polyOptions.width(5);
+            polyOptions.color(Color.parseColor("#27B0D5"));
+            polyOptions.addAll(route.get(shortestRouteIndex).getPoints());
             Polyline polyline = mMap.addPolyline(polyOptions);
             polylines.add(polyline);
 
-        }
     }
 
     @Override
@@ -268,7 +357,9 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
             @Override
             public void onResponse(Call<StatusModel> call, Response<StatusModel> response) {
                 StatusModel statusModel = response.body();
+
                 if (statusModel.getStatus()) {
+                    requestModel = response.body().getRequest();
                     // Log.d("TTTT", "onResponse: lat-->" + statusModel.getRequest().getLatitude() + "long-->" + statusModel.getRequest().getLongitude());
 
                     if(statusModel.getRequest().getUserId()
@@ -276,19 +367,16 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
                         if (statusModel.getRequest().getPicked().equals("0")) {
                             picked.setVisibility(View.VISIBLE);
                         }
-                    }
-                    driver_id = statusModel.getRequest().getUserId();
-                    if (statusModel.getRequest().getPicked().equals("1")) {
-                        picked.setVisibility(View.GONE);
                     }/*else {
                         picked.setVisibility(View.VISIBLE);
 
                     }*/
-                    if (statusModel.getRequest().getFromId().equals(user_id)) {
-                        picked.setVisibility(View.GONE);
-                    }
+
                     start = new LatLng(Double.parseDouble(statusModel.getRequest().getLatitude())
                             , Double.parseDouble(statusModel.getRequest().getLongitude()));
+                    lastLocation = new Location("");
+                    lastLocation.setLongitude(start.longitude);
+                    lastLocation.setLatitude(start.latitude);
                     userPoin = new LatLng(Double.parseDouble(statusModel.getRequest().getUserLatitude())
                             , Double.parseDouble(statusModel.getRequest().getUserLongitude()));
                     end = new LatLng(Double.parseDouble(statusModel.getRequest().getLatitudeTo())
@@ -317,6 +405,19 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
                     markerEnd.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.endpoint));
                     markerUpdated = mMap.addMarker(options4);
                     markerUpdated.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.update));
+
+                    driver_id = statusModel.getRequest().getUserId();
+                    if (statusModel.getRequest().getPicked().equals("1")) {
+                        picked.setVisibility(View.GONE);
+                        finished.setVisibility(View.VISIBLE);
+                        markerStart.remove();
+                        markerUser.remove();
+                    }
+
+                    if (statusModel.getRequest().getFromId().equals(user_id)) {
+                        picked.setVisibility(View.GONE);
+                        finished.setVisibility(View.GONE);
+                    }
                     /////
                     Log.d("TTTT", "onResponse start: lat-->" + start.latitude + "long-->" + start.longitude);
                     //
@@ -324,8 +425,11 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
                     //
                     Log.d("TTTT", "onResponse user: lat-->" + userPoin.latitude + "long-->" + userPoin.longitude);
 
-                    drawRoute(start, userPoin);
-                    drawRoute1(userPoin, end);
+                    if (response.body().getRequest().getPicked().equals("1")) {
+                        drawRoute1(car, end, null, null);
+                    } else {
+                        drawRoute1(start, userPoin, car, end);
+                    }
                     updatedData();
                     /*
 
@@ -359,6 +463,9 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
                 StatusModel statusModel1 = response.body();
                 if (statusModel1.getStatus()) {
                     picked.setVisibility(View.GONE);
+                    finished.setVisibility(View.VISIBLE);
+                    markerStart.remove();
+                    markerUser.remove();
                     Toast.makeText(LiveLocationMapsActivity.this, "Picked", Toast.LENGTH_SHORT).show();
                     Log.d("TTT", "onResponse: On Updated");
 
@@ -367,7 +474,7 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
 
             @Override
             public void onFailure(Call<StatusModel> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
 
@@ -388,7 +495,6 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
                 Log.d("TTT", "onResponse: On method");
                 if (statusModel1.getStatus()) {
                     //picked.setVisibility(View.GONE);
-                    Toast.makeText(LiveLocationMapsActivity.this, "Updated", Toast.LENGTH_SHORT).show();
                     Log.d("TTT", "onResponse: On Updated");
 
                 }
@@ -409,7 +515,9 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot != null) {
                    // Log.d("TTTT", "onDataChange: "+dataSnapshot.getValue());
-                    LatLngModel latLngModel = dataSnapshot.getValue(LatLngModel.class);
+                    String lat = (String) dataSnapshot.child("lat").getValue();
+                    String lng = (String) dataSnapshot.child("lng").getValue();
+                    LatLngModel latLngModel = new LatLngModel(lat,lng);
                    // Log.d("TTTT", "onDataChange: "+latLngModel.getLat()+"teeest");
                     if (latLngModel != null && latLngModel.getLat() != null) {
                         markerUpdated.remove();
@@ -419,8 +527,8 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
                         markerUpdated.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.update));
                     }
                     if(markerStart.isVisible()){
-                        markerStart.setVisible(false);
-                        markerUser.setVisible(false);
+                        //markerStart.setVisible(false);
+                        //markerUser.setVisible(false);
                     }
                 }
             }
@@ -432,6 +540,58 @@ public class LiveLocationMapsActivity extends FragmentActivity implements OnMapR
 
             }
         });
+    }
+
+
+    private void show() {
+        final android.app.AlertDialog.Builder dialogBuilder = new android.app.AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_rating, null);
+        dialogBuilder.setView(dialogView);
+        final RatingBar rating = dialogView.findViewById(R.id.rating_bar_2);
+        final Button rate = dialogView.findViewById(R.id.btn_rate);
+        final EditText comment = dialogView.findViewById(R.id.comment);
+        rating.setIsIndicator(false);
+        alertDialog = dialogBuilder.create();
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+        alertDialog.show();
+        rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                mRatingNumber = rating;
+            }
+        });
+        rate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String commentText = comment.getText().toString();
+                if (TextUtils.isEmpty(commentText)) {
+                    Helper.showSnackBarMessage(getString(R.string.enter_comment), LiveLocationMapsActivity.this);
+                } else {
+                    if (requestModel != null) {
+                        if (Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId().equals(requestModel.getFromId())) {
+                            if (getIntent() != null && getIntent().hasExtra("ride_2")) {
+                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + requestModel.getId() + "&from_id=" + Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId() + "&user_id=" + requestModel.getUserId());
+                            } else {
+                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + requestModel.getId() + "&from_id=" + Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId() + "&user_id=" + requestModel.getUserId());
+
+                            }
+                        } else {
+                            if (getIntent() != null && getIntent().hasExtra("ride_2")) {
+                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + requestModel.getId() + "&from_id=" + Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId() + "&user_id=" + requestModel.getFromId());
+                            } else {
+                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + requestModel.getId() + "&from_id=" + Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId() + "&user_id=" + requestModel.getFromId());
+
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {

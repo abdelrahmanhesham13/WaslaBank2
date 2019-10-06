@@ -90,7 +90,7 @@ public class ReviewsFragment extends Fragment {
 
 
         mProgressDialog = Helper.showProgressDialog(getContext(),getString(R.string.loading),false);
-        mConnector.getRequest("ReviewsActivity","http://www.cta3.com/waslabank/api/get_comments?user_id=" + Helper.getUserSharedPreferences(getContext()).getId());
+        mConnector.getRequest("ReviewsActivity","http://www.as.cta3.com/waslabank/api/get_comments?user_id=" + Helper.getUserSharedPreferences(getContext()).getId());
 
 
 

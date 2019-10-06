@@ -16,6 +16,22 @@
         android:background="@drawable/bg_rectangle_my_rides"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"/>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:text="Finish Trip"
+        android:textColor="#fff"
+        android:textAllCaps="false"
+        android:id="@+id/finish"
+        android:visibility="gone"
+        android:background="@drawable/bg_rectangle_my_rides"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"/>
+
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"

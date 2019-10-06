@@ -39,6 +39,8 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.RideViewHold
     int Seats;
     AppCompatActivity activity;
 
+    public int flag = 0;
+
 
     public RidesAdapter(ArrayList<RideModel> rides,AppCompatActivity activity, int Seats, Context context, OnItemClicked onItemClicked) {
         this.rides = rides;
@@ -79,25 +81,29 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.RideViewHold
         if (URLUtil.isValidUrl(rides.get(i).getUser().getImage()))
             Picasso.get().load(rides.get(i).getUser().getImage()).fit().centerCrop().into(rideViewHolder.profileImage);
         else {
-            Picasso.get().load("http://www.cta3.com/waslabank/prod_img/" + rides.get(i).getUser().getImage()).fit().centerCrop().into(rideViewHolder.profileImage);
+            Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + rides.get(i).getUser().getImage()).fit().centerCrop().into(rideViewHolder.profileImage);
         }
         if (!rides.get(i).getUser().getRating().isEmpty() && !rides.get(i).getUser().getRating().equals("null"))
             rideViewHolder.rating.setRating(Float.parseFloat(rides.get(i).getUser().getRating()));
-        rideViewHolder.requestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Seats <= Integer.parseInt(rides.get(i).getSeats())) {
-                    if (Helper.getUserSharedPreferences(context).getStatus().equals("0")) {
-                        context.startActivity(new Intent(context, VerifyDriverAccountActivity.class));
+        if (flag == 0) {
+            rideViewHolder.requestButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (Seats <= Integer.parseInt(rides.get(i).getSeats())) {
+                        if (Helper.getUserSharedPreferences(context).getStatus().equals("0")) {
+                            context.startActivity(new Intent(context, VerifyDriverAccountActivity.class));
+                        } else {
+                            context.startActivity(new Intent(context, ConfirmRideRequest.class).putExtra("request", rides.get(rideViewHolder.getAdapterPosition())).putExtra("type", "request")
+                                    .putExtra("Seats", rides.get(i).getSeats()));
+                        }
                     } else {
-                        context.startActivity(new Intent(context, ConfirmRideRequest.class).putExtra("request", rides.get(rideViewHolder.getAdapterPosition())).putExtra("type", "request")
-                                .putExtra("Seats",rides.get(i).getSeats()));
+                        Helper.showSnackBarMessage("this ride contains " + rides.get(i).getSeats() + " Seats Only", activity);
                     }
-                }else {
-                    Helper.showSnackBarMessage("this ride contains "+rides.get(i).getSeats()+" Seats Only",activity);
                 }
-            }
-        });
+            });
+        } else {
+            rideViewHolder.requestButton.setVisibility(View.INVISIBLE);
+        }
         //rideViewHolder.numberOfReviews.setText(rides.get(i).getNumOfReviews());
         //rideViewHolder.seats.setText(rides.get(i).getNumOfSeats());
     }

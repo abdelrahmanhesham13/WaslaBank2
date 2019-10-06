@@ -59,6 +59,10 @@ public class MoreActivity extends AppCompatActivity {
     TextView help;
     @BindView(R.id.Credit)
     TextView Credit;
+    @BindView(R.id.transfer_credit)
+    TextView mTransferCredit;
+    @BindView(R.id.group_chats)
+    TextView mGroupChats;
 
 
     UserModel mUserModel;
@@ -170,17 +174,35 @@ public class MoreActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new FinestWebView.Builder(MoreActivity.this).updateTitleFromHtml(false)
-                        .titleDefault(getString(R.string.terms_conditions)).show("http://www.cta3.com/waslabank/api/webview?type=terms");
+                        .titleDefault(getString(R.string.terms_conditions)).show("http://www.as.cta3.com/waslabank/api/webview?type=terms");
             }
         });
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new FinestWebView.Builder(MoreActivity.this).updateTitleFromHtml(false)
-                        .titleDefault(getString(R.string.help)).show("http://www.cta3.com/waslabank/api/webview?type=help");
+                        .titleDefault(getString(R.string.help)).show("http://www.as.cta3.com/waslabank/api/webview?type=help");
 
             }
         });
+
+
+        mTransferCredit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MoreActivity.this,FriendsActivity.class).putExtra("type","transfer_credit"));
+            }
+        });
+
+        mGroupChats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MoreActivity.this,GroupsActivity.class));
+            }
+        });
+
+
+
     }
 
 
@@ -192,7 +214,7 @@ public class MoreActivity extends AppCompatActivity {
         if (URLUtil.isValidUrl(mUserModel.getImage()))
             Picasso.get().load(mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
         else {
-            Picasso.get().load("http://www.cta3.com/waslabank/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
+            Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
         }
         mVerifyAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,7 +223,7 @@ public class MoreActivity extends AppCompatActivity {
             }
         });
         mName.setText(mUserModel.getName());
-        Credit.setText("Credit : "+mUserModel.getCredit()+" KM");
+        Credit.setText("Your points : "+ mUserModel.getCredit());
         if (!mUserModel.getRating().isEmpty())
             mRatingBar.setRating(Float.parseFloat(mUserModel.getRating()));
 

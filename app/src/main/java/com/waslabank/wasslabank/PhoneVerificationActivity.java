@@ -155,7 +155,7 @@ public class PhoneVerificationActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             mProgressDialog = Helper.showProgressDialog(PhoneVerificationActivity.this,getString(R.string.loading),false);
-                            mConnector.getRequest(TAG,"https://www.cta3.com/waslabank/api/signup?password=" + Uri.encode(mPassword) + "&username=" + mEmail + "&mobile=" + mMobile +"&name=" + Uri.encode(mFirstName + " " + mLastName) + "&image=" + mImagePath + "&token=" + Helper.getTokenFromSharedPreferences(PhoneVerificationActivity.this));
+                            mConnector.getRequest(TAG,"http://www.as.cta3.com/waslabank/api/signup?password=" + Uri.encode(mPassword) + "&username=" + mEmail + "&mobile=" + mMobile +"&name=" + Uri.encode(mFirstName + " " + mLastName) + "&image=" + mImagePath + "&token=" + Helper.getTokenFromSharedPreferences(PhoneVerificationActivity.this));
                         } else {
                             Helper.showSnackBarMessage(getString(R.string.error_in_code), PhoneVerificationActivity.this);
                         }

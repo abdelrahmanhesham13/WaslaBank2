@@ -3,27 +3,27 @@ package com.waslabank.wasslabank.models;
 import java.io.Serializable;
 
 public class UserModel implements Serializable {
-    private String name;
-    private String username;
-    private String token;
-    private String password;
-    private String mobile;
-    private String longitude;
-    private String latitude;
-    private String cityId;
-    private String country;
-    private String gender;
-    private String image;
-    private String role;
-    private String id;
-    private int orders;
-    private int comments;
-    private String rating;
-    private String status;
-    private String carName;
-    private boolean friend;
-    private String refId;
-    private String credit;
+    private String name = "";
+    private String username = "";
+    private String token = "";
+    private String password = "";
+    private String mobile = "";
+    private String longitude = "";
+    private String latitude = "";
+    private String cityId = "";
+    private String country = "";
+    private String gender = "";
+    private String image = "";
+    private String role = "";
+    private String id = "";
+    private int orders = 0;
+    private int comments = 0;
+    private String rating = "";
+    private String status = "";
+    private String carName = "";
+    private boolean friend = false;
+    private String refId = "0";
+    private String credit = "";
 
     public UserModel() {
     }
