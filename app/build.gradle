@@ -8,8 +8,8 @@ android {
         applicationId "com.waslabank.wasslabank"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 15
-        versionName "6.1"
+        versionCode 17
+        versionName "6.2"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -22,6 +22,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
     }
 }
 
