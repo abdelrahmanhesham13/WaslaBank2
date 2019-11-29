@@ -1,19 +1,16 @@
 package com.waslabank.wasslabank;
 
-import android.content.Intent;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.waslabank.wasslabank.adapters.FragmentAdapter;
 import com.waslabank.wasslabank.adapters.ProfileFragmentAdapter;
 import com.waslabank.wasslabank.models.UserModel;
 import com.waslabank.wasslabank.utils.Helper;

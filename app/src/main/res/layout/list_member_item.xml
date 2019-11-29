@@ -24,7 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Abdelrahman Hesham"
-        android:textColor="@color/imagepicker_white"
+        android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@id/profile_image" />
 
 </LinearLayout>

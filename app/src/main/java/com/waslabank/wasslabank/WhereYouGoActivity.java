@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -21,7 +21,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,13 +36,10 @@ import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.waslabank.wasslabank.models.MyRideModel;
 import com.waslabank.wasslabank.models.UpdateToken;
-import com.waslabank.wasslabank.models.UserModel;
 import com.waslabank.wasslabank.networkUtils.Connector;
 import com.waslabank.wasslabank.utils.GPSTracker;
 import com.waslabank.wasslabank.utils.Helper;
@@ -601,6 +597,7 @@ public class WhereYouGoActivity extends AppCompatActivity implements TimePickerD
         mCredit.setText("Your points :" + Helper.getUserSharedPreferences(this).getCredit());
         ProgressDialog progressDialog = Helper.showProgressDialog(this,"Loading",false);
         getActiveRide(progressDialog);
+        //getCurrentLocation(this);
     }
 
     private void getCurrentLocation(Context context) {

@@ -1,30 +1,23 @@
 package com.waslabank.wasslabank.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
 import com.squareup.picasso.Picasso;
-import com.waslabank.wasslabank.FriendsRidesActivity;
 import com.waslabank.wasslabank.R;
 import com.waslabank.wasslabank.models.UserModel;
-import com.waslabank.wasslabank.networkUtils.Connector;
-import com.waslabank.wasslabank.utils.Helper;
 
 import java.util.ArrayList;
 

@@ -6,29 +6,19 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.android.volley.VolleyError;
-import com.crashlytics.android.Crashlytics;
 import com.waslabank.wasslabank.networkUtils.Connector;
 import com.waslabank.wasslabank.utils.Helper;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -66,7 +56,10 @@ public class SplashActivity extends AppCompatActivity {
                         startActivity(new Intent(SplashActivity.this, WhereYouGoActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                     }
                 } else {
-                    Helper.showSnackBarMessage(getString(R.string.error_in_credentials), SplashActivity.this);
+                    Helper.removeUserFromSharedPreferences(SplashActivity.this);
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                    finish();
+                    //Helper.showSnackBarMessage(getString(R.string.error_in_credentials), SplashActivity.this);
                 }
             }
         }, new Connector.ErrorCallback() {

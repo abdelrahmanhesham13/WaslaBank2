@@ -1,11 +1,11 @@
 package com.waslabank.wasslabank;
 
 import android.app.ProgressDialog;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +14,6 @@ import android.widget.EditText;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.waslabank.wasslabank.adapters.SelectFriendsAdapter;
-import com.waslabank.wasslabank.models.GroupMessagesResponseModel;
 import com.waslabank.wasslabank.models.StatusResponseModel;
 import com.waslabank.wasslabank.models.UserModel;
 import com.waslabank.wasslabank.networkUtils.Connector;

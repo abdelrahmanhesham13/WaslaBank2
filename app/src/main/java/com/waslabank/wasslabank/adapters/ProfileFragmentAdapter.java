@@ -1,15 +1,12 @@
 package com.waslabank.wasslabank.adapters;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.waslabank.wasslabank.AboutFragment;
-import com.waslabank.wasslabank.MyRidesFragment;
-import com.waslabank.wasslabank.R;
 import com.waslabank.wasslabank.ReviewsFragment;
-import com.waslabank.wasslabank.RideHistoryFragment;
 
 /**
  * Created by Abdelrahman Hesham on 4/22/2017.

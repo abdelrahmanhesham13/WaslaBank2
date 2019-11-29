@@ -2,21 +2,22 @@ package com.waslabank.wasslabank.notification;
 
 import android.util.Log;
 
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
+import androidx.annotation.NonNull;
+
+import com.google.firebase.messaging.FirebaseMessagingService;
 import com.waslabank.wasslabank.utils.Helper;
 
-public class FirebaseIDService extends FirebaseInstanceIdService {
+public class FirebaseIDService extends FirebaseMessagingService {
     private static final String TAG = "FirebaseIDService";
 
     @Override
-    public void onTokenRefresh() {
-        // Get updated InstanceID token.
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d(TAG, "Refreshed token: " + refreshedToken);
+    public void onNewToken(@NonNull String s) {
+        super.onNewToken(s);
 
-        // TODO: Implement this method to send any registration to your app's servers.
-        sendRegistrationToServer(refreshedToken);
+        Log.d(TAG, "Refreshed token: " + s);
+
+        sendRegistrationToServer(s);
+
     }
 
     /**

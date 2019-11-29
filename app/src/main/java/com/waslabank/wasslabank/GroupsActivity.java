@@ -2,21 +2,19 @@ package com.waslabank.wasslabank;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.waslabank.wasslabank.adapters.GroupChatsAdapter;
 import com.waslabank.wasslabank.models.GroupChatModel;
 import com.waslabank.wasslabank.models.GroupsResponseModel;
-import com.waslabank.wasslabank.models.SingleRequestModel.Example;
 import com.waslabank.wasslabank.networkUtils.Connector;
 import com.waslabank.wasslabank.utils.Helper;
 

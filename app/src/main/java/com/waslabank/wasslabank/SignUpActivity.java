@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,12 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.android.volley.VolleyError;
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.nguyenhoanglam.imagepicker.model.Config;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker;
 import com.waslabank.wasslabank.networkUtils.Connector;
 import com.waslabank.wasslabank.utils.Helper;
 
@@ -39,7 +37,7 @@ import javax.net.ssl.X509TrustManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.bumptech.glide.load.resource.bitmap.TransformationUtils.rotateImage;
+
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -114,22 +112,22 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void pickImage() {
-        ImagePicker.with(this)
-                .setFolderMode(true) // folder mode (false by default)
-                .setFolderTitle(getString(R.string.image_folder)) // folder selection title
-                .setImageTitle(getString(R.string.select_image)) // image selection title
-                .setMaxSize(1) //  Max images can be selected
-                .setMultipleMode(false) //single mode
-                .setShowCamera(true) // show camera or not (true by default)
+        ImagePicker.create(this)
+                .folderMode(true) // folder mode (false by default)
+                .toolbarFolderTitle(getString(R.string.image_folder)) // folder selection title
+                .toolbarImageTitle(getString(R.string.select_image)) // image selection title
+                .limit(1) //  Max images can be selected
+                .single() //single mode
+                .showCamera(true) // show camera or not (true by default)
                 .start(); // start image picker activity with Request code
     }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Config.RC_PICK_IMAGES && resultCode == RESULT_OK && data != null) {
-            ArrayList<Image> images = data.getParcelableArrayListExtra(Config.EXTRA_IMAGES);
-            Image img = images.get(0);
+        super.onActivityResult(requestCode, resultCode, data);
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            Image img = ImagePicker.getFirstImageOrNull(data);
             try {
                 Bitmap bitmapImage = getBitmap(img.getPath());
                 mProfileImageView.setImageBitmap(bitmapImage);
@@ -212,27 +210,8 @@ public class SignUpActivity extends AppCompatActivity {
                 ExifInterface.ORIENTATION_UNDEFINED);
         Bitmap rotatedBitmap = null;
 
-        switch (orientation) {
 
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                rotatedBitmap = rotateImage(bitmap, 90);
-                break;
-
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                rotatedBitmap = rotateImage(bitmap, 180);
-                break;
-
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                rotatedBitmap = rotateImage(bitmap, 270);
-                break;
-
-            case ExifInterface.ORIENTATION_NORMAL:
-            default:
-                rotatedBitmap = bitmap;
-        }
-
-
-        return rotatedBitmap;
+        return bitmap;
     }
 
     private Bitmap getBitmapFromPath(String path, int size) {

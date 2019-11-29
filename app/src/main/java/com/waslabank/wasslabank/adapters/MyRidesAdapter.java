@@ -3,23 +3,21 @@ package com.waslabank.wasslabank.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.waslabank.wasslabank.ConfirmRideRequest;
 import com.waslabank.wasslabank.LiveLocationMapsActivity;
 import com.waslabank.wasslabank.R;
 import com.waslabank.wasslabank.models.MyRideModel;

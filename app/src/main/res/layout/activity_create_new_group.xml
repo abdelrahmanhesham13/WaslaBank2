@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -37,7 +37,7 @@
         <TextView
             android:layout_width="match_parent"
             android:gravity="center"
-            android:textColor="@color/imagepicker_white"
+            android:textColor="#FFFFFF"
             android:layout_marginBottom="10dp"
             android:text="Select from your friends"
             android:layout_height="wrap_content" />
@@ -45,7 +45,7 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friends_recycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -56,4 +56,4 @@
 
 
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
