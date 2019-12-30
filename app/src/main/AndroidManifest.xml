@@ -55,7 +55,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc" /> <!-- You must use an API key to authenticate each request to Google Maps Platform APIs -->
+            android:value="AIzaSyCE29pCYj3ntftgARbTP0FA8xZyLBCF7f8" /> <!-- You must use an API key to authenticate each request to Google Maps Platform APIs -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

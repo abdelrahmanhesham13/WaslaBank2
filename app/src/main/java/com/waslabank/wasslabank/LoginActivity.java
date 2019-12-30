@@ -7,8 +7,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.android.volley.VolleyError;
+import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -115,30 +118,30 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(String tag, String response) {
                 mProgressDialog.dismiss();
-                if (Connector.checkStatus(response)){
-                    Helper.saveUserToSharedPreferences(LoginActivity.this,Connector.getUser(response));
-                    startActivity(new Intent(LoginActivity.this,WhereYouGoActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                if (Connector.checkStatus(response)) {
+                    Helper.saveUserToSharedPreferences(LoginActivity.this, Connector.getUser(response));
+                    startActivity(new Intent(LoginActivity.this, WhereYouGoActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 } else {
-                    Helper.showSnackBarMessage(getString(R.string.error_in_credentials),LoginActivity.this);
+                    Helper.showSnackBarMessage(getString(R.string.error_in_credentials), LoginActivity.this);
                 }
             }
         }, new Connector.ErrorCallback() {
             @Override
             public void onError(VolleyError error) {
                 mProgressDialog.dismiss();
-                Helper.showSnackBarMessage(getString(R.string.error),LoginActivity.this);
+                Helper.showSnackBarMessage(getString(R.string.error), LoginActivity.this);
             }
         });
 
         mConnectorSocial = new Connector(this, new Connector.LoadCallback() {
             @Override
             public void onComplete(String tag, String response) {
-                if (Connector.checkStatus(response)){
+                if (Connector.checkStatus(response)) {
                     mProgressDialog.dismiss();
-                    Helper.saveUserToSharedPreferences(LoginActivity.this,Connector.getUser(response));
-                    startActivity(new Intent(LoginActivity.this,WhereYouGoActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    Helper.saveUserToSharedPreferences(LoginActivity.this, Connector.getUser(response));
+                    startActivity(new Intent(LoginActivity.this, WhereYouGoActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 } else {
-                    mConnectorSignUp.getRequest(TAG,"http://www.as.cta3.com/waslabank/api/signup?password=" + Uri.encode("") + "&username=" + mEmail + "&mobile=" + "" +"&name=" + Uri.encode(mName) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
+                    mConnectorSignUp.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/signup?password=" + Uri.encode("") + "&username=" + mEmail + "&mobile=" + "" + "&name=" + Uri.encode(mName) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
 
                 }
             }
@@ -146,29 +149,29 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onError(VolleyError error) {
                 mProgressDialog.dismiss();
-                Helper.showSnackBarMessage(getString(R.string.error),LoginActivity.this);
+                Helper.showSnackBarMessage(getString(R.string.error), LoginActivity.this);
             }
         });
 
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this,SignUpActivity.class));
+                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
             }
         });
 
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Helper.hideKeyboard(LoginActivity.this,view);
+                Helper.hideKeyboard(LoginActivity.this, view);
                 mEmail = mEmailEditText.getText().toString();
-                if (mEmailEditText.getText().toString().isEmpty()){
-                    Helper.showSnackBarMessage(getString(R.string.mobile),LoginActivity.this);
-                } else if (mPasswordEditText.getText().toString().isEmpty()){
-                    Helper.showSnackBarMessage(getString(R.string.enter_password),LoginActivity.this);
+                if (mEmailEditText.getText().toString().isEmpty()) {
+                    Helper.showSnackBarMessage(getString(R.string.mobile), LoginActivity.this);
+                } else if (mPasswordEditText.getText().toString().isEmpty()) {
+                    Helper.showSnackBarMessage(getString(R.string.enter_password), LoginActivity.this);
                 } else {
-                    mProgressDialog = Helper.showProgressDialog(LoginActivity.this,getString(R.string.loading),false);
-                    mConnector.getRequest(TAG,"http://www.as.cta3.com/waslabank/api/login?password=" + Uri.encode(mPasswordEditText.getText().toString()) + "&username=" + mEmailEditText.getText().toString() + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
+                    mProgressDialog = Helper.showProgressDialog(LoginActivity.this, getString(R.string.loading), false);
+                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/login?password=" + Uri.encode(mPasswordEditText.getText().toString()) + "&username=" + mEmailEditText.getText().toString() + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
                 }
             }
         });
@@ -191,10 +194,11 @@ public class LoginActivity extends AppCompatActivity {
                                                     mEmail = object.getString("email");
                                                     mName = object.getString("name");
                                                     mImage = "https://graph.facebook.com/" + object.get("id") + "/picture?type=large";
-                                                    mProgressDialog = Helper.showProgressDialog(LoginActivity.this,getString(R.string.loading),false);
+                                                    mProgressDialog = Helper.showProgressDialog(LoginActivity.this, getString(R.string.loading), false);
                                                     mConnectorSocial.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/login?" + "username=" + mEmail + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
+                                                    Crashlytics.logException(e);
                                                 }
                                             }
                                         });
@@ -212,8 +216,9 @@ public class LoginActivity extends AppCompatActivity {
 
                             @Override
                             public void onError(FacebookException exception) {
-                                Log.d("TTTT", "onError: "+ exception.toString());
+                                Log.d("TTTT", "onError: " + exception.toString());
                                 exception.printStackTrace();
+                                Crashlytics.logException(exception);
                                 Helper.showSnackBarMessage(getString(R.string.error), LoginActivity.this);
                             }
                         });
@@ -225,16 +230,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(String tag, String response) {
                 mProgressDialog.dismiss();
-                if (Connector.checkStatus(response)){
-                    Helper.saveUserToSharedPreferences(LoginActivity.this,Connector.getUser(response));
-                    startActivity(new Intent(LoginActivity.this,WhereYouGoActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                if (Connector.checkStatus(response)) {
+                    Helper.saveUserToSharedPreferences(LoginActivity.this, Connector.getUser(response));
+                    startActivity(new Intent(LoginActivity.this, WhereYouGoActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 }
             }
         }, new Connector.ErrorCallback() {
             @Override
             public void onError(VolleyError error) {
                 mProgressDialog.dismiss();
-                Helper.showSnackBarMessage(getString(R.string.error),LoginActivity.this);
+                Helper.showSnackBarMessage(getString(R.string.error), LoginActivity.this);
 
             }
         });
@@ -249,7 +254,7 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 signIn();
-                                Log.d("TTTTT", "onComplete: "+task.getException());
+                                Log.d("TTTTT", "onComplete: " + task.getException());
                             }
                         });
                     }
@@ -287,7 +292,7 @@ public class LoginActivity extends AppCompatActivity {
                 else
                     mImage = "";
                 if (mEmail != null) {
-                    mProgressDialog = Helper.showProgressDialog(LoginActivity.this,getString(R.string.loading),false);
+                    mProgressDialog = Helper.showProgressDialog(LoginActivity.this, getString(R.string.loading), false);
                     mConnectorSocial.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/login?" + "username=" + mEmail + "&token=" + Helper.getTokenFromSharedPreferences(LoginActivity.this));
                 }
             }

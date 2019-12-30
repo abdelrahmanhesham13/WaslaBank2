@@ -363,7 +363,7 @@ public class LiveLocationMapsActivity extends AppCompatActivity implements OnMap
 
                     if(statusModel.getRequest().getUserId()
                             .equals(Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId())){
-                        if (statusModel.getRequest().getPicked().equals("0")) {
+                        if (statusModel.getRequest().getPicked().equals("0") && statusModel.getRequest().getStart().equals("1")) {
                             picked.setVisibility(View.VISIBLE);
                         }
                     }/*else {
