@@ -264,6 +264,21 @@
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
+
+                <TextView
+                    android:id="@+id/privacy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_announcement"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_announcement"
+                    android:gravity="center_vertical"
+                    android:padding="15dp"
+                    android:text="Privacy"
+                    android:textColor="#A6A6A6"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/friends_button"
                     android:layout_width="match_parent"

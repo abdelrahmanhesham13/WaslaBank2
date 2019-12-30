@@ -60,7 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (URLUtil.isValidUrl(mUserModel.getImage()))
             Picasso.get().load(mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
         else {
-            Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
+            Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
         }
         mName.setText(mUserModel.getName());
         if (!mUserModel.getRating().isEmpty())

@@ -159,7 +159,7 @@ public class ChatActivity extends AppCompatActivity {
             if (URLUtil.isValidUrl(mFromUser.getImage()))
                 Picasso.get().load(mFromUser.getImage()).fit().centerCrop().into(mStoreImage);
             else {
-                Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + mFromUser.getImage()).fit().centerCrop().into(mStoreImage);
+                Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + mFromUser.getImage()).fit().centerCrop().into(mStoreImage);
             }
         }
 
@@ -214,7 +214,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 //
         if (getIntent() != null && getIntent().hasExtra("chat_id")) {
-            String url = "http://www.as.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + getIntent().getStringExtra("chat_id");
+            String url = "https://www.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + getIntent().getStringExtra("chat_id");
             mConnector.getRequest(TAG, url);
         }
 
@@ -231,10 +231,10 @@ public class ChatActivity extends AppCompatActivity {
                     mProgressBar.setVisibility(View.VISIBLE);
                     String url;
                     if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                        url = "http://www.as.cta3.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
+                        url = "https://www.cta3.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
                                 "&user_id=" + mUserModel.getId() + "&to_id=" + mChatModel.getToId() + "&request_id=" + mMyRideModel.getId();
                     } else {
-                        url = "http://www.as.cta3.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
+                        url = "https://www.cta3.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
                                 "&user_id=" + mUserModel.getId() + "&to_id=" + mChatModel.getToId() + "&request_id=" + mRideModel.getId();
                     }
                     Uri builder = Uri.parse(url.toString())
@@ -251,7 +251,7 @@ public class ChatActivity extends AppCompatActivity {
         mSendParent.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
         if (mChatModel != null) {
-            String url = "http://www.as.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
+            String url = "https://www.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
             mConnector.getRequest(TAG, url);
         }
 
@@ -264,7 +264,7 @@ public class ChatActivity extends AppCompatActivity {
                 final int random = new Random().nextInt((max - min) + 1) + min;
                 myRef.child(mChatModel.getChatId()).setValue(random);
 
-                String url = "http://www.as.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
+                String url = "https://www.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
                 mConnector.getRequest(TAG, url);
 
             }
@@ -286,7 +286,7 @@ public class ChatActivity extends AppCompatActivity {
                 mMessagesRecycler.setVisibility(View.INVISIBLE);
                 mSendParent.setVisibility(View.INVISIBLE);
                 mProgressBar.setVisibility(View.VISIBLE);
-                String url = "http://www.as.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
+                String url = "https://www.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
                 mConnector.getRequest(TAG, url);
             }
         });
@@ -301,10 +301,10 @@ public class ChatActivity extends AppCompatActivity {
                     mProgressBar.setVisibility(View.VISIBLE);
                     String url;
                     if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                        url = "http://www.as.cta3.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
+                        url = "https://www.cta3.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
                                 "&user_id=" + mUserModel.getId() + "&to_id=" + mChatModel.getToId() + "&type=text" + "&request_id=" + mMyRideModel.getId();
                     } else {
-                        url = "http://www.as.cta3.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
+                        url = "https://www.cta3.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
                                 "&user_id=" + mUserModel.getId() + "&to_id=" + mChatModel.getToId() + "&type=text" + "&request_id=" + mRideModel.getId();
                     }
                     Uri builder = Uri.parse(url)
@@ -344,7 +344,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d("TTTT", "onDataChange: Updated"+mChatModel.getChatId());
-                String url = "http://www.as.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
+                String url = "https://www.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
                 mConnector.getRequest(TAG, url);
             }
 
@@ -388,32 +388,32 @@ public class ChatActivity extends AppCompatActivity {
                     if (getIntent() != null && getIntent().hasExtra("ride_2")) {
                         if (mUserModel.getId().equals(mMyRideModel.getFromId())) {
                             if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideModel.getId() + "&delivery_id=" + mUserModel.getId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideModel.getId() + "&delivery_id=" + mUserModel.getId());
                             } else {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&delivery_id=" + mUserModel.getId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&delivery_id=" + mUserModel.getId());
 
                             }
                         } else {
                             if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideModel.getId() + "&user_id=" + mUserModel.getId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideModel.getId() + "&user_id=" + mUserModel.getId());
                             } else {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&user_id=" + mUserModel.getId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&user_id=" + mUserModel.getId());
 
                             }
                         }
                     } else {
                         if (mUserModel.getId().equals(mRideModel.getFromId())) {
                             if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideModel.getId() + "&delivery_id=" + mUserModel.getId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideModel.getId() + "&delivery_id=" + mUserModel.getId());
                             } else {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&delivery_id=" + mUserModel.getId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&delivery_id=" + mUserModel.getId());
 
                             }
                         } else {
                             if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideModel.getId() + "&user_id=" + mUserModel.getId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideModel.getId() + "&user_id=" + mUserModel.getId());
                             } else {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&user_id=" + mUserModel.getId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&user_id=" + mUserModel.getId());
 
                             }
                         }
@@ -437,9 +437,9 @@ public class ChatActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.complete_ride) {
             mProgressDialog = Helper.showProgressDialog(this, getString(R.string.loading), false);
             if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                mConnectorCompleteRide.getRequest(TAG, "http://www.as.cta3.com/waslk/api/cancel_offer?price=" + "" + "&id=" + mMyRideModel.getId() + "&delivery_id=" + mMyRideModel.getFromId() + "&user_id=" + mMyRideModel.getUserId());
+                mConnectorCompleteRide.getRequest(TAG, "https://www.cta3.com/waslk/api/cancel_offer?price=" + "" + "&id=" + mMyRideModel.getId() + "&delivery_id=" + mMyRideModel.getFromId() + "&user_id=" + mMyRideModel.getUserId());
             } else {
-                mConnectorCompleteRide.getRequest(TAG, "http://www.as.cta3.com/waslk/api/cancel_offer?price=" + "" + "&id=" + mRideModel.getId() + "&delivery_id=" + mRideModel.getFromId() + "&user_id=" + mRideModel.getUserId());
+                mConnectorCompleteRide.getRequest(TAG, "https://www.cta3.com/waslk/api/cancel_offer?price=" + "" + "&id=" + mRideModel.getId() + "&delivery_id=" + mRideModel.getFromId() + "&user_id=" + mRideModel.getUserId());
             }
 
             return true;

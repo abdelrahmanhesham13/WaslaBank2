@@ -201,15 +201,15 @@ public class ConfirmRideRequest extends AppCompatActivity {
                     mDistanceTextView.setText(String.format(Locale.ENGLISH, "%.2f KM", Float.valueOf(mRideModel.getDistance())));
                     if (getIntent().getStringExtra("type").equals("offer")) {
                         if (mUserModel.getId().equals(mRideModel.getUserId()))
-                            mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mRideModel.getFromId());
+                            mConnectorGetUser.getRequest(TAG, "https://www.cta3.com/waslabank/api/get_user?id=" + mRideModel.getFromId());
                         else
-                            mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mRideModel.getUserId());
+                            mConnectorGetUser.getRequest(TAG, "https://www.cta3.com/waslabank/api/get_user?id=" + mRideModel.getUserId());
 
                     } else {
                         if (mUserModel.getId().equals(mMyRideMode.getUserId()))
-                            mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getFromId());
+                            mConnectorGetUser.getRequest(TAG, "https://www.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getFromId());
                         else
-                            mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getUserId());
+                            mConnectorGetUser.getRequest(TAG, "https://www.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getUserId());
                     }
                 } else {
                     Helper.showSnackBarMessage(getString(R.string.error), ConfirmRideRequest.this);
@@ -289,7 +289,7 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 if (URLUtil.isValidUrl(mMyRideMode.getUser().getImage()))
                     Picasso.get().load(mMyRideMode.getUser().getImage()).fit().centerCrop().into(mProfileImage);
                 else {
-                    Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + mMyRideMode.getUser().getImage()).fit().centerCrop().into(mProfileImage);
+                    Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + mMyRideMode.getUser().getImage()).fit().centerCrop().into(mProfileImage);
                 }
                 mNameTextView.setText(mMyRideMode.getUser().getName());
                 mCarDetailsTextView.setText(mMyRideMode.getUser().getCarName());
@@ -301,9 +301,9 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 mNumberButton.setVisibility(View.GONE);
                 mProgressDialog = Helper.showProgressDialog(this, getString(R.string.loading), false);
                 if (mUserModel.getId().equals(mMyRideMode.getUserId()))
-                    mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getFromId());
+                    mConnectorGetUser.getRequest(TAG, "https://www.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getFromId());
                 else
-                    mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getUserId());
+                    mConnectorGetUser.getRequest(TAG, "https://www.cta3.com/waslabank/api/get_user?id=" + mMyRideMode.getUserId());
 
                 if ((mMyRideMode.getStatus().equals("1") || mMyRideMode.getStatus().equals("2")) && mMyRideMode.isUpcoming()) {
                     mConfirmButton.setText(getString(R.string.message));
@@ -353,15 +353,15 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 if (URLUtil.isValidUrl(mNotificationModel.getmUserModel().getImage()))
                     Picasso.get().load(mNotificationModel.getmUserModel().getImage()).fit().centerCrop().into(mProfileImage);
                 else {
-                    Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + mNotificationModel.getmUserModel().getImage()).fit().centerCrop().into(mProfileImage);
-                   /* Picasso.get().load("http://www.cta3.com/waslabank/prod_img/" + mMyRideMode.getUser()
+                    Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + mNotificationModel.getmUserModel().getImage()).fit().centerCrop().into(mProfileImage);
+                   /* Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + mMyRideMode.getUser()
                             .getImage()).fit().centerCrop().into(mProfileImage);*/
                 }
                 mNameTextView.setText(mNotificationModel.getmUserModel().getName());
                 mCarDetailsTextView.setText(mNotificationModel.getmUserModel().getCarName());
                 mNumberButton.setVisibility(View.GONE);
                 mProgressDialog = Helper.showProgressDialog(this, getString(R.string.loading), false);
-                mConnectorGetRequest.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_request?id=" + mNotificationModel.getRequestId());
+                mConnectorGetRequest.getRequest(TAG, "https://www.cta3.com/waslabank/api/get_request?id=" + mNotificationModel.getRequestId());
                 if (mNotificationModel.getStatus().equals("0")) {
                     cancell.setVisibility(View.VISIBLE);
                     mConfirmButton.setText(getString(R.string.accept));
@@ -418,7 +418,7 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 if (URLUtil.isValidUrl(mRideModel.getUser().getImage()))
                     Picasso.get().load(mRideModel.getUser().getImage()).fit().centerCrop().into(mProfileImage);
                 else {
-                    Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + mRideModel.getUser().getImage()).fit().centerCrop().into(mProfileImage);
+                    Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + mRideModel.getUser().getImage()).fit().centerCrop().into(mProfileImage);
                 }
                 mNameTextView.setText(mRideModel.getUser().getName());
                 mCarDetailsTextView.setText(mRideModel.getUser().getCarName());
@@ -429,9 +429,9 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 mDistanceTextView.setText(String.format(Locale.ENGLISH, "%.2f KM", Float.valueOf(mRideModel.getDistance())));
                 mProgressDialog = Helper.showProgressDialog(this, getString(R.string.loading), false);
                 if (mUserModel.getId().equals(mRideModel.getUserId()))
-                    mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mRideModel.getFromId());
+                    mConnectorGetUser.getRequest(TAG, "https://www.cta3.com/waslabank/api/get_user?id=" + mRideModel.getFromId());
                 else
-                    mConnectorGetUser.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_user?id=" + mRideModel.getUserId());
+                    mConnectorGetUser.getRequest(TAG, "https://www.cta3.com/waslabank/api/get_user?id=" + mRideModel.getUserId());
             }
 
         }
@@ -443,25 +443,25 @@ public class ConfirmRideRequest extends AppCompatActivity {
                     getLocation();
                 } else if (mConfirmButton.getText().equals(getString(R.string.accept))) {
                     mProgressDialog.show();
-                    mConnectorAcceptOffer.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/accept_offer?id=" + mNotificationModel.getRequestId() + "&from_id=" + mNotificationModel.getFromId() + "&user_id=" + mNotificationModel.getUserId());
+                    mConnectorAcceptOffer.getRequest(TAG, "https://www.cta3.com/waslabank/api/accept_offer?id=" + mNotificationModel.getRequestId() + "&from_id=" + mNotificationModel.getFromId() + "&user_id=" + mNotificationModel.getUserId());
                 } else {
                     if (getIntent().getStringExtra("type").equals("offer")) {
                         if (mUserModel.getId().equals(mRideModel.getUserId())) {
-                            String url = "http://www.as.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mRideModel.getFromId() + "&request_id=" + mRideModel.getId();
+                            String url = "https://www.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mRideModel.getFromId() + "&request_id=" + mRideModel.getId();
                             Helper.writeToLog(url);
                             mConnectorSendMessage.getRequest(TAG, url);
                         } else {
-                            String url = "http://www.as.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mRideModel.getUserId() + "&request_id=" + mRideModel.getId();
+                            String url = "https://www.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mRideModel.getUserId() + "&request_id=" + mRideModel.getId();
                             Helper.writeToLog(url);
                             mConnectorSendMessage.getRequest(TAG, url);
                         }
                     } else {
                         if (mUserModel.getId().equals(mMyRideMode.getUserId())) {
-                            String url = "http://www.as.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mMyRideMode.getFromId() + "&request_id=" + mMyRideMode.getId();
+                            String url = "https://www.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mMyRideMode.getFromId() + "&request_id=" + mMyRideMode.getId();
                             Helper.writeToLog(url);
                             mConnectorSendMessage.getRequest(TAG, url);
                         } else {
-                            String url = "http://www.as.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mMyRideMode.getUserId() + "&request_id=" + mMyRideMode.getId();
+                            String url = "https://www.cta3.com/waslabank/api/start_chat" + "?message=&user_id=" + mUserModel.getId() + "&to_id=" + mMyRideMode.getUserId() + "&request_id=" + mMyRideMode.getId();
                             Helper.writeToLog(url);
                             mConnectorSendMessage.getRequest(TAG, url);
                         }
@@ -490,7 +490,7 @@ public class ConfirmRideRequest extends AppCompatActivity {
                 if (lat != 0 && lon != 0 && !mLocated) {
                     mLocated = true;
                     mProgressDialog = Helper.showProgressDialog(ConfirmRideRequest.this, getString(R.string.loading), false);
-                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/send_offer?request_id=" + mRideModel.getId() + "&user_id=" + mRideModel.getUserId() + "&longitude=" + lon + "&latitude=" + lat + "&address=address&distance=100&from_id=" + Helper.getUserSharedPreferences(ConfirmRideRequest.this).getId() + "&seats=" + mNumberButton.getNumber());
+                    mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/send_offer?request_id=" + mRideModel.getId() + "&user_id=" + mRideModel.getUserId() + "&longitude=" + lon + "&latitude=" + lat + "&address=address&distance=100&from_id=" + Helper.getUserSharedPreferences(ConfirmRideRequest.this).getId() + "&seats=" + mNumberButton.getNumber());
                     mTracker.stopUsingGPS();
                 }
             }
@@ -500,7 +500,7 @@ public class ConfirmRideRequest extends AppCompatActivity {
             if (location != null) {
                 if (location.getLatitude() != 0 && location.getLongitude() != 0 && !mLocated) {
                     mProgressDialog = Helper.showProgressDialog(ConfirmRideRequest.this, getString(R.string.loading), false);
-                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/send_offer?request_id=" + mRideModel.getId() + "&user_id=" + mRideModel.getUserId() + "&longitude=" + location.getLongitude() + "&latitude=" + location.getLatitude() + "&address=address&distance=100&from_id=" + Helper.getUserSharedPreferences(ConfirmRideRequest.this).getId() + "&seats=" + mNumberButton.getNumber());
+                    mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/send_offer?request_id=" + mRideModel.getId() + "&user_id=" + mRideModel.getUserId() + "&longitude=" + location.getLongitude() + "&latitude=" + location.getLatitude() + "&address=address&distance=100&from_id=" + Helper.getUserSharedPreferences(ConfirmRideRequest.this).getId() + "&seats=" + mNumberButton.getNumber());
                     mLocated = true;
                     mTracker.stopUsingGPS();
                 }
@@ -602,13 +602,13 @@ public class ConfirmRideRequest extends AppCompatActivity {
                             if (URLUtil.isValidUrl(example.getRequest().getOffers().get(i).getClient().getImage())) {
                                 Picasso.get().load(example.getRequest().getOffers().get(i).getClient().getImage()).into((ImageView) v.findViewById(R.id.profile_image));
                             } else {
-                                Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + example.getRequest().getOffers().get(i).getClient().getImage()).into((ImageView) v.findViewById(R.id.profile_image));
+                                Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + example.getRequest().getOffers().get(i).getClient().getImage()).into((ImageView) v.findViewById(R.id.profile_image));
 
                             }
                             ((Button) v.findViewById(R.id.accept)).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    mConnectorAcceptOffer.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/accept_offer?id=" + offer.getRequestId() + "&from_id=" + from.getId() + "&user_id=" + Helper.getUserSharedPreferences(ConfirmRideRequest.this).getId());
+                                    mConnectorAcceptOffer.getRequest(TAG, "https://www.cta3.com/waslabank/api/accept_offer?id=" + offer.getRequestId() + "&from_id=" + from.getId() + "&user_id=" + Helper.getUserSharedPreferences(ConfirmRideRequest.this).getId());
                                 }
                             });
 
@@ -697,32 +697,32 @@ public class ConfirmRideRequest extends AppCompatActivity {
                     if (mMyRideMode != null) {
                         if (mUserModel.getId().equals(mMyRideMode.getFromId())) {
                             if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getUserId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getUserId());
                             } else {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getUserId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getUserId());
 
                             }
                         } else {
                             if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getFromId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getFromId());
                             } else {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getFromId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getFromId());
 
                             }
                         }
                     } else {
                         if (mRideModel != null) {
                             if (mUserModel.getId().equals(mRideModel.getFromId())) {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getFromId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getFromId());
                             } else {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getFromId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRideModel.getId() + "&from_id=" + mUserModel.getId() + "&user_id=" + mMyRideMode.getFromId());
 
                             }
                         } else {
                             if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId());
                             } else {
-                                mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId());
+                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mMyRideMode.getId() + "&from_id=" + mUserModel.getId());
 
                             }
                         }

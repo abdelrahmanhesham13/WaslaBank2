@@ -78,7 +78,7 @@ public class FriendsRidesActivity extends AppCompatActivity {
         mRidesRecycler.setAdapter(mRidesAdapter);
 
         mProgressDialog = Helper.showProgressDialog(this,getString(R.string.loading),false);
-        mConnector.getRequest(TAG,"http://www.as.cta3.com/waslabank/api/get_requests?user_id=" + getIntent().getStringExtra("user_id") + "&type=friend");
+        mConnector.getRequest(TAG,"https://www.cta3.com/waslabank/api/get_requests?user_id=" + getIntent().getStringExtra("user_id") + "&type=friend");
 
     }
 }

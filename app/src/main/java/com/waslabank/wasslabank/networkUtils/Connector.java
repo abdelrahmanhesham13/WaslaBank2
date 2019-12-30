@@ -768,7 +768,7 @@ public class Connector {
     }
 
     public interface connectionServices {
-        public String BaseURL = "http://www.as.cta3.com/";
+        public String BaseURL = "https://www.cta3.com/";
 
         @GET("waslabank/api/get_request")
         Call<StatusModel> get_request(

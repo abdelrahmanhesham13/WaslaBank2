@@ -136,7 +136,7 @@ public class GroupChatActivity extends AppCompatActivity {
             if (URLUtil.isValidUrl(memberModel.getImage()))
                 Picasso.get().load(memberModel.getImage()).fit().centerCrop().error(R.drawable.com_facebook_profile_picture_blank_portrait).into(((ImageView) memberView.findViewById(R.id.profile_image)));
             else {
-                Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + memberModel.getImage()).fit().error(R.drawable.com_facebook_profile_picture_blank_portrait).centerCrop().into(((ImageView) memberView.findViewById(R.id.profile_image)));
+                Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + memberModel.getImage()).fit().error(R.drawable.com_facebook_profile_picture_blank_portrait).centerCrop().into(((ImageView) memberView.findViewById(R.id.profile_image)));
             }
             Log.d(TAG, "showMembers: " + memberModel.getId());
             mMembersParent.addView(memberView);

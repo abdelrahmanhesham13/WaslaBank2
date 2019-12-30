@@ -15,8 +15,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.waslabank.wasslabank.networkUtils.Connector;
 import com.waslabank.wasslabank.utils.Helper;
 
@@ -85,17 +90,23 @@ public class SplashActivity extends AppCompatActivity {
                     if (!isGPSEnabled && !isNetworkEnabled) {
                         showSettingsAlert();
                     } else {
-                        if (Helper.preferencesContainsUser(SplashActivity.this)) {
-                            mProgressDialog = Helper.showProgressDialog(SplashActivity.this, getString(R.string.loading), false);
-                            mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/login?password="
-                                    + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getPassword())
-                                    + "&username=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this)
-                                    .getUsername()) + "&token=" + Helper
-                                    .getTokenFromSharedPreferences(SplashActivity.this));
-                        } else {
-                            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                            finish();
-                        }
+                        FirebaseInstanceId.getInstance().getInstanceId()
+                                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                        if (task.getResult() != null) {
+                                            String token = task.getResult().getToken();
+                                            Helper.saveTokenToSharePreferences(SplashActivity.this, token);
+                                        }
+                                        if (Helper.preferencesContainsUser(SplashActivity.this)) {
+                                            mProgressDialog = Helper.showProgressDialog(SplashActivity.this, getString(R.string.loading), false);
+                                            mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/login?password=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getPassword()) + "&username=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getUsername()) + "&token=" + Helper.getTokenFromSharedPreferences(SplashActivity.this));
+                                        } else {
+                                            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                                            finish();
+                                        }
+                                    }
+                                });
                     }
                 } else {
                     finish();
@@ -168,13 +179,23 @@ public class SplashActivity extends AppCompatActivity {
             if (!isGPSEnabled && !isNetworkEnabled) {
                 showSettingsAlert();
             } else {
-                if (Helper.preferencesContainsUser(SplashActivity.this)) {
-                    mProgressDialog = Helper.showProgressDialog(SplashActivity.this, getString(R.string.loading), false);
-                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/login?password=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getPassword()) + "&username=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getUsername()) + "&token=" + Helper.getTokenFromSharedPreferences(SplashActivity.this));
-                } else {
-                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                    finish();
-                }
+                FirebaseInstanceId.getInstance().getInstanceId()
+                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                if (task.getResult() != null) {
+                                    String token = task.getResult().getToken();
+                                    Helper.saveTokenToSharePreferences(SplashActivity.this, token);
+                                }
+                                if (Helper.preferencesContainsUser(SplashActivity.this)) {
+                                    mProgressDialog = Helper.showProgressDialog(SplashActivity.this, getString(R.string.loading), false);
+                                    mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/login?password=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getPassword()) + "&username=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getUsername()) + "&token=" + Helper.getTokenFromSharedPreferences(SplashActivity.this));
+                                } else {
+                                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                                    finish();
+                                }
+                            }
+                        });
             }
         }
     }

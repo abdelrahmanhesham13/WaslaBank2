@@ -156,7 +156,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 resultIntent = new Intent(this, SplashActivity.class).putExtra("goToNotification", true);
 
             }  else if(notificationMessage.get("targetScreen").equals("request")) {
-                connector.getRequest("TAg","http://www.as.cta3.com/waslabank/api/get_request?id=" + notificationMessage.get("request_id"));
+                connector.getRequest("TAg","https://www.cta3.com/waslabank/api/get_request?id=" + notificationMessage.get("request_id"));
             }  else if (notificationMessage.get("targetScreen").equals("group_message")) {
                 Intent intent = new Intent("groupMessage");
                 intent.putExtra("user_id",notificationMessage.get("user_id"));

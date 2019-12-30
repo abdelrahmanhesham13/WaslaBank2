@@ -54,7 +54,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         if (URLUtil.isValidUrl(notifications.get(i).getmUserModel().getImage()))
             Picasso.get().load(notifications.get(i).getmUserModel().getImage()).fit().centerCrop().into(notificationViewHolder.profileImage);
         else {
-            Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + notifications.get(i).getmUserModel().getImage()).fit().centerCrop().into(notificationViewHolder.profileImage);
+            Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + notifications.get(i).getmUserModel().getImage()).fit().centerCrop().into(notificationViewHolder.profileImage);
         }
     }
 

@@ -81,7 +81,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
             if (URLUtil.isValidUrl(users.get(i).getImage()))
                 Picasso.get().load(users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
             else {
-                Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
+                Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
             }
 
             if (type == 0) {
@@ -118,14 +118,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
                         users.get(i).setFriend(true);
                     }
                     notifyItemChanged(i);
-                    mConnector.getRequest("", "http://www.as.cta3.com/waslabank/api/add_friend?from_id=" + Helper.getUserSharedPreferences(context).getId() + "&to_id=" + users.get(userViewHolder.getAdapterPosition()).getId());
+                    mConnector.getRequest("", "https://www.cta3.com/waslabank/api/add_friend?from_id=" + Helper.getUserSharedPreferences(context).getId() + "&to_id=" + users.get(userViewHolder.getAdapterPosition()).getId());
                 }
             });
         } else {
             if (URLUtil.isValidUrl(users.get(i).getImage()))
                 Picasso.get().load(users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
             else {
-                Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
+                Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
             }
             userViewHolder.mShowRidesButton.setVisibility(View.GONE);
             userViewHolder.mAddFriendButton.setVisibility(View.GONE);
@@ -193,7 +193,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
                 //What ever you want to do with the value
                 Editable YouEditTextValue = edittext.getText();
                 if (!YouEditTextValue.toString().isEmpty())
-                    mConnector.getRequest("", "http://www.as.cta3.com/waslabank/api/transfer_credits?from_id=" + Helper.getUserSharedPreferences(context).getId() + "&to_id=" + toId + "&credit=" + YouEditTextValue.toString());
+                    mConnector.getRequest("", "https://www.cta3.com/waslabank/api/transfer_credits?from_id=" + Helper.getUserSharedPreferences(context).getId() + "&to_id=" + toId + "&credit=" + YouEditTextValue.toString());
             }
         });
 

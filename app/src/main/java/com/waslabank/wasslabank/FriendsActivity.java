@@ -100,7 +100,7 @@ public class FriendsActivity extends AppCompatActivity {
 
 
         mProgressDialog = Helper.showProgressDialog(this,getString(R.string.loading),false);
-        mConnector.getRequest(TAG,"http://www.as.cta3.com/waslabank/api/get_friends?user_id=" + Helper.getUserSharedPreferences(this).getId());
+        mConnector.getRequest(TAG,"https://www.cta3.com/waslabank/api/get_friends?user_id=" + Helper.getUserSharedPreferences(this).getId());
     }
 
 

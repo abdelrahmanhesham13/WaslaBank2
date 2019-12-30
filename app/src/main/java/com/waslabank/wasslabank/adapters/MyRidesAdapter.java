@@ -89,7 +89,7 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.MyRideVi
         if (URLUtil.isValidUrl(rides.get(i).getUser().getImage()))
             Picasso.get().load(rides.get(i).getUser().getImage()).fit().centerCrop().into(myRideViewHolder.profileImage);
         else {
-            Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + rides.get(i).getUser().getImage()).fit().centerCrop().into(myRideViewHolder.profileImage);
+            Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + rides.get(i).getUser().getImage()).fit().centerCrop().into(myRideViewHolder.profileImage);
         }
         //myRideViewHolder.seats.setText(rides.get(i).getNumOfSeats());
 
@@ -142,7 +142,7 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.MyRideVi
 
 
                 } else {
-                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/start_request?id=" + rides.get(i).getId());
+                    mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/start_request?id=" + rides.get(i).getId());
                     currentRequestId = rides.get(i).getId();
                 }
             }

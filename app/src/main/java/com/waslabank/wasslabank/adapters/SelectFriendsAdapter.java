@@ -56,7 +56,7 @@ public class SelectFriendsAdapter extends RecyclerView.Adapter<SelectFriendsAdap
         if (URLUtil.isValidUrl(users.get(i).getImage()))
             Picasso.get().load(users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
         else {
-            Picasso.get().load("http://www.as.cta3.com/waslabank/prod_img/" + users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
+            Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
         }
         userViewHolder.mAddFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override

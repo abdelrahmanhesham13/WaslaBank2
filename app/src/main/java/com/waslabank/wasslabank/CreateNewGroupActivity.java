@@ -106,10 +106,10 @@ public class CreateNewGroupActivity extends AppCompatActivity {
         mProgressDialog = Helper.showProgressDialog(this, getString(R.string.loading), false);
 
         if (mType.equals("addMember")) {
-            mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/friend_not_group?user_id=" + Helper.getUserSharedPreferences(this).getId()
+            mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/friend_not_group?user_id=" + Helper.getUserSharedPreferences(this).getId()
                     + "&group_id=" + getIntent().getStringExtra("group_id"));
         } else {
-            mConnector.getRequest(TAG, "http://www.as.cta3.com/waslabank/api/get_friends?user_id=" + Helper.getUserSharedPreferences(this).getId());
+            mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/get_friends?user_id=" + Helper.getUserSharedPreferences(this).getId());
         }
     }
 
