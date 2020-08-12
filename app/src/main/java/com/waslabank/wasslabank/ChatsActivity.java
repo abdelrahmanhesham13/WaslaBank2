@@ -93,7 +93,7 @@ public class ChatsActivity extends AppCompatActivity {
                 model.setImage(chats.get(position).getImage());
                 mChatModel = chats.get(position);
                 mProgressDialog.show();
-                mConnectorGetRide.getRequest("ChatsActivity", "https://www.cta3.com/waslabank/api/get_request?id=" + chats.get(position).getRequestId());
+                mConnectorGetRide.getRequest("ChatsActivity", "https://code-grow.com/waslabank/api/get_request?id=" + chats.get(position).getRequestId());
 
             }
         });
@@ -102,7 +102,7 @@ public class ChatsActivity extends AppCompatActivity {
         mChatsRecycler.setAdapter(mAdapter);
 
         mProgressDialog = Helper.showProgressDialog(this, getString(R.string.loading), false);
-        mConnector.getRequest("ChatsActivity", "https://www.cta3.com/waslabank/api/get_chat?user_id=" + Helper.getUserSharedPreferences(this).getId());
+        mConnector.getRequest("ChatsActivity", "https://code-grow.com/waslabank/api/get_chat?user_id=" + Helper.getUserSharedPreferences(this).getId());
 
     }
 

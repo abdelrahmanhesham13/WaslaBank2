@@ -6,6 +6,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +90,7 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.MyRideVi
         if (URLUtil.isValidUrl(rides.get(i).getUser().getImage()))
             Picasso.get().load(rides.get(i).getUser().getImage()).fit().centerCrop().into(myRideViewHolder.profileImage);
         else {
-            Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + rides.get(i).getUser().getImage()).fit().centerCrop().into(myRideViewHolder.profileImage);
+            Picasso.get().load("https://code-grow.com/waslabank/prod_img/" + rides.get(i).getUser().getImage()).fit().centerCrop().into(myRideViewHolder.profileImage);
         }
         //myRideViewHolder.seats.setText(rides.get(i).getNumOfSeats());
 
@@ -133,6 +134,13 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.MyRideVi
         }else {
             myRideViewHolder.startRide.setText(context.getString(R.string.open_map));
         }
+        Log.d(TAG, "onBindViewHolder: " + rides.get(i).getFromId() + " " + rides.get(i).getId());
+        if (rides.get(i).getFromId().equals("0")) {
+            myRideViewHolder.startRide.setVisibility(View.GONE);
+        } else {
+            myRideViewHolder.startRide.setVisibility(View.VISIBLE);
+        }
+
         myRideViewHolder.startRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,7 +150,7 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.MyRideVi
 
 
                 } else {
-                    mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/start_request?id=" + rides.get(i).getId());
+                    mConnector.getRequest(TAG, "https://code-grow.com/waslabank/api/start_request?id=" + rides.get(i).getId());
                     currentRequestId = rides.get(i).getId();
                 }
             }

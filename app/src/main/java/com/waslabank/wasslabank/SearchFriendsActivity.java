@@ -80,7 +80,7 @@ public class SearchFriendsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mProgressDialog = Helper.showProgressDialog(SearchFriendsActivity.this,getString(R.string.loading),false);
-                mConnector.getRequest(TAG,"https://www.cta3.com/waslabank/api/search_users?mobile=" + mSearch.getText().toString() + "&user_id=" + Helper.getUserSharedPreferences(SearchFriendsActivity.this).getId());
+                mConnector.getRequest(TAG,"https://code-grow.com/waslabank/api/search_users?mobile=" + mSearch.getText().toString() + "&user_id=" + Helper.getUserSharedPreferences(SearchFriendsActivity.this).getId());
 
             }
         });

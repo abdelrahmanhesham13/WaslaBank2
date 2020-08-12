@@ -79,6 +79,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.LAT_LNG,Place.Field.NAME));
+        autocompleteFragment.setCountry("EG");
         if (autocompleteFragment.getView() != null)
             ((EditText) autocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input)).setTextSize(13.0f);
 

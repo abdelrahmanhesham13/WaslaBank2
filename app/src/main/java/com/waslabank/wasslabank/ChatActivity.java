@@ -159,7 +159,7 @@ public class ChatActivity extends AppCompatActivity {
             if (URLUtil.isValidUrl(mFromUser.getImage()))
                 Picasso.get().load(mFromUser.getImage()).fit().centerCrop().into(mStoreImage);
             else {
-                Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + mFromUser.getImage()).fit().centerCrop().into(mStoreImage);
+                Picasso.get().load("https://code-grow.com/waslabank/prod_img/" + mFromUser.getImage()).fit().centerCrop().into(mStoreImage);
             }
         }
 
@@ -214,7 +214,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 //
         if (getIntent() != null && getIntent().hasExtra("chat_id")) {
-            String url = "https://www.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + getIntent().getStringExtra("chat_id");
+            String url = "https://code-grow.com/waslabank/api/get_chat_messages" + "?chat_id=" + getIntent().getStringExtra("chat_id");
             mConnector.getRequest(TAG, url);
         }
 
@@ -231,10 +231,10 @@ public class ChatActivity extends AppCompatActivity {
                     mProgressBar.setVisibility(View.VISIBLE);
                     String url;
                     if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                        url = "https://www.cta3.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
+                        url = "https://code-grow.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
                                 "&user_id=" + mUserModel.getId() + "&to_id=" + mChatModel.getToId() + "&request_id=" + mMyRideModel.getId();
                     } else {
-                        url = "https://www.cta3.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
+                        url = "https://code-grow.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
                                 "&user_id=" + mUserModel.getId() + "&to_id=" + mChatModel.getToId() + "&request_id=" + mRideModel.getId();
                     }
                     Uri builder = Uri.parse(url.toString())
@@ -251,7 +251,7 @@ public class ChatActivity extends AppCompatActivity {
         mSendParent.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
         if (mChatModel != null) {
-            String url = "https://www.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
+            String url = "https://code-grow.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
             mConnector.getRequest(TAG, url);
         }
 
@@ -264,7 +264,7 @@ public class ChatActivity extends AppCompatActivity {
                 final int random = new Random().nextInt((max - min) + 1) + min;
                 myRef.child(mChatModel.getChatId()).setValue(random);
 
-                String url = "https://www.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
+                String url = "https://code-grow.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
                 mConnector.getRequest(TAG, url);
 
             }
@@ -286,7 +286,7 @@ public class ChatActivity extends AppCompatActivity {
                 mMessagesRecycler.setVisibility(View.INVISIBLE);
                 mSendParent.setVisibility(View.INVISIBLE);
                 mProgressBar.setVisibility(View.VISIBLE);
-                String url = "https://www.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
+                String url = "https://code-grow.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
                 mConnector.getRequest(TAG, url);
             }
         });
@@ -301,10 +301,10 @@ public class ChatActivity extends AppCompatActivity {
                     mProgressBar.setVisibility(View.VISIBLE);
                     String url;
                     if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                        url = "https://www.cta3.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
+                        url = "https://code-grow.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
                                 "&user_id=" + mUserModel.getId() + "&to_id=" + mChatModel.getToId() + "&type=text" + "&request_id=" + mMyRideModel.getId();
                     } else {
-                        url = "https://www.cta3.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
+                        url = "https://code-grow.com/waslabank/api/send_message" + "?chat_id=" + mChatModel.getChatId() +
                                 "&user_id=" + mUserModel.getId() + "&to_id=" + mChatModel.getToId() + "&type=text" + "&request_id=" + mRideModel.getId();
                     }
                     Uri builder = Uri.parse(url)
@@ -344,7 +344,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d("TTTT", "onDataChange: Updated"+mChatModel.getChatId());
-                String url = "https://www.cta3.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
+                String url = "https://code-grow.com/waslabank/api/get_chat_messages" + "?chat_id=" + mChatModel.getChatId();
                 mConnector.getRequest(TAG, url);
             }
 

@@ -100,7 +100,7 @@ public class SplashActivity extends AppCompatActivity {
                                         }
                                         if (Helper.preferencesContainsUser(SplashActivity.this)) {
                                             mProgressDialog = Helper.showProgressDialog(SplashActivity.this, getString(R.string.loading), false);
-                                            mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/login?password=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getPassword()) + "&username=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getUsername()) + "&token=" + Helper.getTokenFromSharedPreferences(SplashActivity.this));
+                                            mConnector.getRequest(TAG, "https://code-grow.com/waslabank/api/login?password=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getPassword()) + "&username=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getUsername()) + "&token=" + Helper.getTokenFromSharedPreferences(SplashActivity.this));
                                         } else {
                                             startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                                             finish();
@@ -189,7 +189,7 @@ public class SplashActivity extends AppCompatActivity {
                                 }
                                 if (Helper.preferencesContainsUser(SplashActivity.this)) {
                                     mProgressDialog = Helper.showProgressDialog(SplashActivity.this, getString(R.string.loading), false);
-                                    mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/login?password=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getPassword()) + "&username=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getUsername()) + "&token=" + Helper.getTokenFromSharedPreferences(SplashActivity.this));
+                                    mConnector.getRequest(TAG, "https://code-grow.com/waslabank/api/login?password=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getPassword()) + "&username=" + Uri.encode(Helper.getUserSharedPreferences(SplashActivity.this).getUsername()) + "&token=" + Helper.getTokenFromSharedPreferences(SplashActivity.this));
                                 } else {
                                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                                     finish();

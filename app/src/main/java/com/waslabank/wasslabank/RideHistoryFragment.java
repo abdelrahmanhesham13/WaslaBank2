@@ -89,7 +89,7 @@ public class RideHistoryFragment extends Fragment {
         mMyRidesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mMyRidesRecycler.setAdapter(mMyRidesAdapter);
         mProgressDialog = Helper.showProgressDialog(getContext(), getString(R.string.loading), false);
-        mConnector.getRequest(TAG, "https://www.cta3.com/waslabank/api/get_requests?user_id="
+        mConnector.getRequest(TAG, "https://code-grow.com/waslabank/api/get_requests?user_id="
                 + Helper.getUserSharedPreferences(getContext()).getId());
 
         return v;

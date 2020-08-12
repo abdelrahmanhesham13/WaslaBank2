@@ -78,7 +78,7 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.RideViewHold
         if (URLUtil.isValidUrl(rides.get(i).getUser().getImage()))
             Picasso.get().load(rides.get(i).getUser().getImage()).fit().centerCrop().into(rideViewHolder.profileImage);
         else {
-            Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + rides.get(i).getUser().getImage()).fit().centerCrop().into(rideViewHolder.profileImage);
+            Picasso.get().load("https://code-grow.com/waslabank/prod_img/" + rides.get(i).getUser().getImage()).fit().centerCrop().into(rideViewHolder.profileImage);
         }
         if (!rides.get(i).getUser().getRating().isEmpty() && !rides.get(i).getUser().getRating().equals("null"))
             rideViewHolder.rating.setRating(Float.parseFloat(rides.get(i).getUser().getRating()));

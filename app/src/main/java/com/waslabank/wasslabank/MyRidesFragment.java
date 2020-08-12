@@ -133,7 +133,7 @@ public class MyRidesFragment extends Fragment {
                 final int pos = (int) viewHolder.itemView.getTag();
                 mPos = pos;
                 mProgressDialog.show();
-                mConnectorDeleteRequest.getRequest(TAG,"https://www.cta3.com/waslabank/api/delete_request?user_id=" + Helper.getUserSharedPreferences(getContext()).getId() + "&id=" + mMyRidesModels.get(pos).getId());
+                mConnectorDeleteRequest.getRequest(TAG,"https://code-grow.com/waslabank/api/delete_request?user_id=" + Helper.getUserSharedPreferences(getContext()).getId() + "&id=" + mMyRidesModels.get(pos).getId());
 
             }
 
@@ -170,7 +170,7 @@ public class MyRidesFragment extends Fragment {
         }).attachToRecyclerView(mMyRidesRecycler);
 
         mProgressDialog = Helper.showProgressDialog(getContext(),getString(R.string.loading),false);
-        mConnector.getRequest(TAG,"https://www.cta3.com/waslabank/api/get_requests?user_id=" + Helper.getUserSharedPreferences(getContext()).getId());
+        mConnector.getRequest(TAG,"https://code-grow.com/waslabank/api/get_requests?user_id=" + Helper.getUserSharedPreferences(getContext()).getId());
 
         return v;
     }

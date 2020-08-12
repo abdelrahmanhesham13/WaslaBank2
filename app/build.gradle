@@ -8,8 +8,8 @@ android {
         applicationId "com.waslabank.wasslabank"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 20
-        versionName "6.5"
+        versionCode 23
+        versionName "6.8"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,7 +34,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.browser:browser:1.0.0'
+    implementation 'androidx.browser:browser:1.2.0'
     implementation 'androidx.exifinterface:exifinterface:1.1.0'
     implementation 'com.jakewharton:butterknife:10.2.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
@@ -50,7 +50,7 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.google.android.libraries.places:places:2.1.0'
-    implementation 'com.google.firebase:firebase-messaging:20.0.1'
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'com.cepheuen.elegant-number-button:lib:1.0.2'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.android.volley:volley:1.1.1'

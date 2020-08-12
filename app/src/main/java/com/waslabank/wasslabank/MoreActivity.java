@@ -176,7 +176,7 @@ public class MoreActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new FinestWebView.Builder(MoreActivity.this).updateTitleFromHtml(false)
-                        .titleDefault(getString(R.string.terms_conditions)).show("https://www.cta3.com/waslabank/api/webview?type=terms");
+                        .titleDefault(getString(R.string.terms_conditions)).show("https://code-grow.com/waslabank/api/webview?type=terms");
             }
         });
 
@@ -184,7 +184,7 @@ public class MoreActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new FinestWebView.Builder(MoreActivity.this).updateTitleFromHtml(false)
-                        .titleDefault("Privacy").show("https://cta3.com/waslabank/api/webview?type=privacy");
+                        .titleDefault("Privacy").show("https://code-grow.com/waslabank/api/webview?type=privacy");
             }
         });
 
@@ -192,7 +192,7 @@ public class MoreActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new FinestWebView.Builder(MoreActivity.this).updateTitleFromHtml(false)
-                        .titleDefault(getString(R.string.help)).show("https://www.cta3.com/waslabank/api/webview?type=help");
+                        .titleDefault(getString(R.string.help)).show("https://code-grow.com/waslabank/api/webview?type=help");
 
             }
         });
@@ -225,7 +225,7 @@ public class MoreActivity extends AppCompatActivity {
         if (URLUtil.isValidUrl(mUserModel.getImage()))
             Picasso.get().load(mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
         else {
-            Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
+            Picasso.get().load("https://code-grow.com/waslabank/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
         }
         mVerifyAccount.setOnClickListener(new View.OnClickListener() {
             @Override

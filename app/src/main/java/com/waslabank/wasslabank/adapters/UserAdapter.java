@@ -66,14 +66,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         if (URLUtil.isValidUrl(users.get(i).getImage()))
             Picasso.get().load(users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
         else {
-            Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
+            Picasso.get().load("https://code-grow.com/waslabank/prod_img/" + users.get(i).getImage()).fit().centerCrop().into(userViewHolder.profileImage);
         }
 
         userViewHolder.mAddFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((Button)view).setText(context.getString(R.string.requested));
-                mConnector.getRequest("","https://www.cta3.com/waslabank/api/request_join?from_id=" + Helper.getUserSharedPreferences(context).getId() + "&user_id=" + users.get(userViewHolder.getAdapterPosition()).getId() + "&name=" + Helper.getUserSharedPreferences(context).getName());
+                mConnector.getRequest("","https://code-grow.com/waslabank/api/request_join?from_id=" + Helper.getUserSharedPreferences(context).getId() + "&user_id=" + users.get(userViewHolder.getAdapterPosition()).getId() + "&name=" + Helper.getUserSharedPreferences(context).getName());
             }
         });
 

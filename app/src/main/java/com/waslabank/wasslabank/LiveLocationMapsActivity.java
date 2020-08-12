@@ -572,16 +572,16 @@ public class LiveLocationMapsActivity extends AppCompatActivity implements OnMap
                     if (requestModel != null) {
                         if (Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId().equals(requestModel.getFromId())) {
                             if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + requestModel.getId() + "&from_id=" + Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId() + "&user_id=" + requestModel.getUserId());
+                                mConnectorRate.getRequest(TAG, "https://code-grow.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + requestModel.getId() + "&from_id=" + Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId() + "&user_id=" + requestModel.getUserId());
                             } else {
-                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + requestModel.getId() + "&from_id=" + Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId() + "&user_id=" + requestModel.getUserId());
+                                mConnectorRate.getRequest(TAG, "https://code-grow.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + requestModel.getId() + "&from_id=" + Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId() + "&user_id=" + requestModel.getUserId());
 
                             }
                         } else {
                             if (getIntent() != null && getIntent().hasExtra("ride_2")) {
-                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + requestModel.getId() + "&from_id=" + Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId() + "&user_id=" + requestModel.getFromId());
+                                mConnectorRate.getRequest(TAG, "https://code-grow.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + requestModel.getId() + "&from_id=" + Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId() + "&user_id=" + requestModel.getFromId());
                             } else {
-                                mConnectorRate.getRequest(TAG, "https://www.cta3.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + requestModel.getId() + "&from_id=" + Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId() + "&user_id=" + requestModel.getFromId());
+                                mConnectorRate.getRequest(TAG, "https://code-grow.com/waslabank/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + requestModel.getId() + "&from_id=" + Helper.getUserSharedPreferences(LiveLocationMapsActivity.this).getId() + "&user_id=" + requestModel.getFromId());
 
                             }
                         }

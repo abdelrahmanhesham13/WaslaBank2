@@ -63,13 +63,13 @@ public class DailyRidesAdapter extends RecyclerView.Adapter<DailyRidesAdapter.Ri
         if (URLUtil.isValidUrl(Helper.getUserSharedPreferences(context).getImage()))
             Picasso.get().load(Helper.getUserSharedPreferences(context).getImage()).fit().centerCrop().into(rideViewHolder.profileImage);
         else {
-            Picasso.get().load("https://www.cta3.com/waslabank/prod_img/" + Helper.getUserSharedPreferences(context).getImage()).fit().centerCrop().into(rideViewHolder.profileImage);
+            Picasso.get().load("https://code-grow.com/waslabank/prod_img/" + Helper.getUserSharedPreferences(context).getImage()).fit().centerCrop().into(rideViewHolder.profileImage);
         }
 
         rideViewHolder.mActiveSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                mConnector.getRequest("Daily", "https://www.cta3.com/waslabank/api/add_daily?user_id=" + Helper.getUserSharedPreferences(context).getId() + "&longitude=" + rides.get(i).getLon() + "&latitude=" + rides.get(i).getLat()  + "&address=" + Uri.encode(rides.get(i).getAddress()) + "&time=" + Uri.encode(rides.get(i).getRequestTime()) + "&latitude_to=" + Uri.encode(rides.get(i).getLatTo()) +  "&address_to=" + Uri.encode(rides.get(i).getAddressTo()) + "&longitude_to=" + Uri.encode(rides.get(i).getLonTo()) + "&weekday=" + Uri.encode(rides.get(i).getWeekDay()) + "&id=" + rides.get(i).getId() + "&status=" + (b?1:0));
+                mConnector.getRequest("Daily", "https://code-grow.com/waslabank/api/add_daily?user_id=" + Helper.getUserSharedPreferences(context).getId() + "&longitude=" + rides.get(i).getLon() + "&latitude=" + rides.get(i).getLat()  + "&address=" + Uri.encode(rides.get(i).getAddress()) + "&time=" + Uri.encode(rides.get(i).getRequestTime()) + "&latitude_to=" + Uri.encode(rides.get(i).getLatTo()) +  "&address_to=" + Uri.encode(rides.get(i).getAddressTo()) + "&longitude_to=" + Uri.encode(rides.get(i).getLonTo()) + "&weekday=" + Uri.encode(rides.get(i).getWeekDay()) + "&id=" + rides.get(i).getId() + "&status=" + (b?1:0));
             }
         });
 
